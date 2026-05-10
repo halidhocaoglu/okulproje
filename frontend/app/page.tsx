@@ -7,8 +7,8 @@ import { setAccessToken } from "../lib/auth";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("student.software@isu.local");
-  const [password, setPassword] = useState("DevPassword123!");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [mode, setMode] = useState<"login" | "register">("login");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -227,6 +227,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   type="email"
+                  placeholder="name@domain.com"
                   required
                 />
               </label>
@@ -237,6 +238,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   type="password"
+                  placeholder="Enter your password"
                   required
                 />
               </label>
@@ -250,11 +252,12 @@ export default function LoginPage() {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   type="text"
+                  placeholder="Enter your full name"
                   required
                 />
               </label>
               <label className="mb-4 block">
-                <span className="mb-2 block text-sm text-slate-300">University email</span>
+                <span className="mb-2 block text-sm text-slate-300">Institutional email username</span>
                 <div className="flex items-center overflow-hidden rounded-xl border border-[rgba(127,183,220,0.18)] bg-[rgba(5,14,24,0.92)]">
                   <input
                     className="min-w-0 flex-1 bg-transparent px-4 py-3 lowercase outline-none ring-[#3880b0] focus:ring-2"
@@ -262,7 +265,7 @@ export default function LoginPage() {
                     onChange={(e) =>
                       setUsernamePrefix(e.target.value.trim().toLowerCase().replace(/\s+/g, ""))
                     }
-                    placeholder="halid.hocaoglu"
+                    placeholder="username"
                     type="text"
                     required
                   />
@@ -271,7 +274,7 @@ export default function LoginPage() {
                   </span>
                 </div>
                 <p className="mt-2 text-xs text-slate-500">
-                  Only letters, numbers, dots, and underscores are allowed.
+                  This will be used as the part before {fixedDomain}. Only letters, numbers, dots, and underscores are allowed.
                 </p>
               </label>
               <label className="mb-4 block">
@@ -299,6 +302,7 @@ export default function LoginPage() {
                   value={registerPassword}
                   onChange={(e) => setRegisterPassword(e.target.value)}
                   type="password"
+                  placeholder="Create a password"
                   required
                 />
               </label>
