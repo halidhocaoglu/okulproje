@@ -9,7 +9,8 @@ import {
   getUnreadNotificationCount,
   markAllNotificationsRead,
   markNotificationRead,
-  NotificationItem
+  NotificationItem,
+  SOCKET_BASE_URL
 } from "../lib/api";
 import { clearAccessToken, getAccessToken } from "../lib/auth";
 
@@ -36,7 +37,7 @@ export function NotificationBell() {
 
     void loadInitial();
 
-    const socket: Socket = io("http://localhost:3002/chat", {
+    const socket: Socket = io(`${SOCKET_BASE_URL}/chat`, {
       auth: {
         token: `Bearer ${token}`
       }

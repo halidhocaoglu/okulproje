@@ -30,6 +30,7 @@ function buildApiUrl(path: string): string {
 }
 
 const API_BASE_URL = normalizeApiBaseUrl(process.env.NEXT_PUBLIC_API_BASE_URL);
+export const SOCKET_BASE_URL = API_BASE_URL.replace(/\/api$/, "");
 
 export class ApiError extends Error {
   status: number;

@@ -12,7 +12,8 @@ import {
   getRooms,
   markRoomAsRead,
   reportChatMessage,
-  sendMessage
+  sendMessage,
+  SOCKET_BASE_URL
 } from "../../lib/api";
 import { clearAccessToken, getAccessToken } from "../../lib/auth";
 import { io, Socket } from "socket.io-client";
@@ -235,7 +236,7 @@ export default function ChatPage() {
       return;
     }
 
-    const socket = io("http://localhost:3002/chat", {
+    const socket = io(`${SOCKET_BASE_URL}/chat`, {
       auth: {
         token: `Bearer ${token}`
       }

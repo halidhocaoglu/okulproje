@@ -17,6 +17,7 @@ import {
   getUserPresence,
   respondToFriendRequest,
   sendFriendRequest,
+  SOCKET_BASE_URL,
   startDirectMessage,
   unblockUser,
   unfollowUser
@@ -59,7 +60,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
     const token = getAccessToken();
     if (!token) return;
 
-    const socket: Socket = io("http://localhost:3002/chat", {
+    const socket: Socket = io(`${SOCKET_BASE_URL}/chat`, {
       auth: {
         token: `Bearer ${token}`
       }
