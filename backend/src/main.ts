@@ -8,6 +8,22 @@ import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { AppLoggerService } from './infrastructure/logging/logger.service';
 
+function matchesConfiguredOrigin(origin: string, configuredOrigin: string): boolean {
+  if (configuredOrigin === '*' || configuredOrigin === origin) {
+    return true;
+  }
+
+  if (!configuredOrigin.includes('*')) {
+    return false;
+  }
+
+  const escapedPattern = configuredOrigin
+    .replace(/[.+?^${}()|[\]\\]/g, '\\$&')
+    .replace(/\*/g, '.*');
+
+  return new RegExp(`^${escapedPattern}$`, 'i').test(origin);
+}
+
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
@@ -26,7 +42,9 @@ async function bootstrap(): Promise<void> {
       }
 
       const isWildcard = configuredOrigins.includes('*');
-      const isConfigured = configuredOrigins.includes(origin);
+      const isConfigured = configuredOrigins.some((configuredOrigin) =>
+        matchesConfiguredOrigin(origin, configuredOrigin),
+      );
       const isLocalhost = /^https?:\/\/localhost(:\d+)?$/i.test(origin);
       const isLocalIp = /^https?:\/\/127\.0\.0\.1(:\d+)?$/i.test(origin);
 

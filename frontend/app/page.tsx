@@ -14,6 +14,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [departmentsLoading, setDepartmentsLoading] = useState(false);
+  const [departmentsRequested, setDepartmentsRequested] = useState(false);
   const [fullName, setFullName] = useState("");
   const [usernamePrefix, setUsernamePrefix] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
@@ -30,12 +31,12 @@ export default function LoginPage() {
       return;
     }
 
-    if (departments.length > 0 || departmentsLoading) {
+    if (departments.length > 0 || departmentsLoading || departmentsRequested) {
       return;
     }
 
     void loadDepartments();
-  }, [mode, departments.length, departmentsLoading]);
+  }, [mode, departments.length, departmentsLoading, departmentsRequested]);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -63,6 +64,7 @@ export default function LoginPage() {
   }
 
   async function loadDepartments() {
+    setDepartmentsRequested(true);
     setDepartmentsLoading(true);
     try {
       const data = await getDepartments();
@@ -188,6 +190,7 @@ export default function LoginPage() {
                 onClick={() => {
                   setMode("login");
                   setError(null);
+                  setDepartmentsRequested(false);
                 }}
                 className={`rounded-full px-4 py-2 transition ${
                   mode === "login"
@@ -202,6 +205,7 @@ export default function LoginPage() {
                 onClick={() => {
                   setMode("register");
                   setError(null);
+                  setDepartmentsRequested(false);
                 }}
                 className={`rounded-full px-4 py-2 transition ${
                   mode === "register"
