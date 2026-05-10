@@ -5,6 +5,7 @@ export const REDIS_CACHE = 'REDIS_CACHE';
 export const CHAT_EVENTS_CHANNEL = 'messaging:chat:events';
 
 export interface RedisConfig {
+  enabled: boolean;
   host: string;
   port: number;
   password?: string;

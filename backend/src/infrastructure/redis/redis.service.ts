@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import Redis from 'ioredis';
 
+import { getRedisConfig } from '../config/redis.config';
 import {
   REDIS_CACHE,
   REDIS_PUBLISHER,
@@ -13,6 +14,7 @@ type RedisMessageHandler = (message: string, channel: string) => Promise<void> |
 export class RedisService implements OnModuleDestroy {
   private readonly logger = new Logger(RedisService.name);
   private readonly messageHandlers = new Map<string, Set<RedisMessageHandler>>();
+  private readonly redisConfig = getRedisConfig();
 
   constructor(
     @Inject(REDIS_PUBLISHER) private readonly publisher: Redis,
@@ -25,10 +27,18 @@ export class RedisService implements OnModuleDestroy {
   }
 
   async publish(channel: string, payload: string): Promise<number> {
+    if (!this.redisConfig.enabled) {
+      return 0;
+    }
+
     return this.publisher.publish(channel, payload);
   }
 
   async subscribe(channel: string, handler: RedisMessageHandler): Promise<void> {
+    if (!this.redisConfig.enabled) {
+      return;
+    }
+
     const handlers = this.messageHandlers.get(channel) ?? new Set<RedisMessageHandler>();
     handlers.add(handler);
     this.messageHandlers.set(channel, handlers);
@@ -39,6 +49,10 @@ export class RedisService implements OnModuleDestroy {
   }
 
   async unsubscribe(channel: string, handler?: RedisMessageHandler): Promise<void> {
+    if (!this.redisConfig.enabled) {
+      return;
+    }
+
     const handlers = this.messageHandlers.get(channel);
     if (!handlers) {
       return;
@@ -57,10 +71,18 @@ export class RedisService implements OnModuleDestroy {
   }
 
   async get(key: string): Promise<string | null> {
+    if (!this.redisConfig.enabled) {
+      return null;
+    }
+
     return this.cache.get(key);
   }
 
   async set(key: string, value: string, ttlSeconds?: number): Promise<void> {
+    if (!this.redisConfig.enabled) {
+      return;
+    }
+
     if (ttlSeconds && ttlSeconds > 0) {
       await this.cache.set(key, value, 'EX', ttlSeconds);
       return;
@@ -70,10 +92,18 @@ export class RedisService implements OnModuleDestroy {
   }
 
   async delete(key: string): Promise<void> {
+    if (!this.redisConfig.enabled) {
+      return;
+    }
+
     await this.cache.del(key);
   }
 
   async setAdd(key: string, ...members: string[]): Promise<void> {
+    if (!this.redisConfig.enabled) {
+      return;
+    }
+
     if (members.length === 0) {
       return;
     }
@@ -82,6 +112,10 @@ export class RedisService implements OnModuleDestroy {
   }
 
   async setRemove(key: string, ...members: string[]): Promise<void> {
+    if (!this.redisConfig.enabled) {
+      return;
+    }
+
     if (members.length === 0) {
       return;
     }
@@ -90,14 +124,26 @@ export class RedisService implements OnModuleDestroy {
   }
 
   async setMembers(key: string): Promise<string[]> {
+    if (!this.redisConfig.enabled) {
+      return [];
+    }
+
     return this.cache.smembers(key);
   }
 
   async expire(key: string, ttlSeconds: number): Promise<void> {
+    if (!this.redisConfig.enabled) {
+      return;
+    }
+
     await this.cache.expire(key, ttlSeconds);
   }
 
   async onModuleDestroy(): Promise<void> {
+    if (!this.redisConfig.enabled) {
+      return;
+    }
+
     await Promise.allSettled([
       this.publisher.quit(),
       this.subscriber.quit(),

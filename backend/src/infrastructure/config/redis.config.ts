@@ -17,12 +17,30 @@ function getRedisUrl(): URL | null {
   }
 }
 
+function normalizeString(value: string | undefined): string | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  const normalized = value.trim();
+  if (
+    normalized === '' ||
+    normalized.toLowerCase() === 'undefined' ||
+    normalized.toLowerCase() === 'null'
+  ) {
+    return undefined;
+  }
+
+  return normalized;
+}
+
 function parseNumber(value: string | undefined, fallback: number): number {
-  if (!value || value.trim() === '') {
+  const normalized = normalizeString(value);
+  if (!normalized) {
     return fallback;
   }
 
-  const parsed = Number(value);
+  const parsed = Number(normalized);
   return Number.isInteger(parsed) && parsed >= 0 && parsed < 65536
     ? parsed
     : fallback;
@@ -30,31 +48,33 @@ function parseNumber(value: string | undefined, fallback: number): number {
 
 export function getRedisConfig(): RedisConfig {
   const redisUrl = getRedisUrl();
-  const host =
-    process.env.REDIS_HOST?.trim() ||
-    process.env.REDISHOST?.trim() ||
-    redisUrl?.hostname ||
-    '127.0.0.1';
+  const envHost =
+    normalizeString(process.env.REDIS_HOST) ??
+    normalizeString(process.env.REDISHOST);
+  const envPort =
+    normalizeString(process.env.REDIS_PORT) ??
+    normalizeString(process.env.REDISPORT);
+  const host = envHost ?? redisUrl?.hostname ?? '127.0.0.1';
   const port = parseNumber(
-    process.env.REDIS_PORT ??
-      process.env.REDISPORT ??
-      redisUrl?.port,
+    envPort ?? redisUrl?.port,
     6379,
   );
   const password =
-    process.env.REDIS_PASSWORD ??
-    process.env.REDISPASSWORD ??
+    normalizeString(process.env.REDIS_PASSWORD) ??
+    normalizeString(process.env.REDISPASSWORD) ??
     (redisUrl?.password ? decodeURIComponent(redisUrl.password) : undefined);
   const db = parseNumber(
-    process.env.REDIS_DB ??
-      process.env.REDISDATABASE ??
+    normalizeString(process.env.REDIS_DB) ??
+      normalizeString(process.env.REDISDATABASE) ??
       (redisUrl?.pathname && redisUrl.pathname !== '/'
         ? redisUrl.pathname.replace(/^\//, '')
         : undefined),
     0,
   );
+  const enabled = Boolean(redisUrl || envHost);
 
   return {
+    enabled,
     host,
     port,
     password,
