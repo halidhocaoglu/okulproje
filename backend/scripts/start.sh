@@ -10,7 +10,7 @@ fi
 
 if [ "${RUN_SEED:-false}" = "true" ]; then
   echo "Running seed..."
-  npm run seed:prod
+  node dist/scripts/seed.js
 fi
 
 echo "Starting backend..."
