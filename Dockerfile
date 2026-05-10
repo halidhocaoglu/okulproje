@@ -20,6 +20,9 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 RUN apk add --no-cache bash python3 py3-pip netcat-openbsd curl
+RUN python3 -m venv /opt/venv
+
+ENV PATH="/opt/venv/bin:$PATH"
 
 COPY backend/package.json backend/package-lock.json ./
 RUN npm ci --omit=dev
