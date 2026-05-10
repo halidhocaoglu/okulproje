@@ -1,7 +1,35 @@
 import { getAccessToken } from "./auth";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL?.trim() || "http://localhost:3002/api";
+function normalizeApiBaseUrl(rawValue: string | undefined): string {
+  const fallbackUrl = "http://localhost:3002/api";
+  const trimmedValue = rawValue?.trim();
+
+  if (!trimmedValue) {
+    return fallbackUrl;
+  }
+
+  const withProtocol = /^[a-z][a-z\d+\-.]*:\/\//i.test(trimmedValue)
+    ? trimmedValue
+    : `https://${trimmedValue.replace(/^\/+/, "")}`;
+
+  try {
+    const normalizedUrl = new URL(withProtocol);
+    const normalizedPath = normalizedUrl.pathname.replace(/\/+$/, "");
+    normalizedUrl.pathname = normalizedPath.endsWith("/api")
+      ? normalizedPath
+      : `${normalizedPath}/api`.replace(/\/{2,}/g, "/");
+    return normalizedUrl.toString().replace(/\/$/, "");
+  } catch {
+    return fallbackUrl;
+  }
+}
+
+function buildApiUrl(path: string): string {
+  const normalizedPath = path.replace(/^\/+/, "");
+  return new URL(normalizedPath, `${API_BASE_URL}/`).toString();
+}
+
+const API_BASE_URL = normalizeApiBaseUrl(process.env.NEXT_PUBLIC_API_BASE_URL);
 
 export class ApiError extends Error {
   status: number;
@@ -576,7 +604,7 @@ async function request<T>(
     headers.set("Authorization", `Bearer ${token}`);
   }
 
-  const res = await fetch(`${API_BASE_URL}${path}`, {
+  const res = await fetch(buildApiUrl(path), {
     ...init,
     headers
   });
