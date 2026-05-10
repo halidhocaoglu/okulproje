@@ -12,6 +12,7 @@
     "migration:up": "alembic upgrade head",
     "migration:down": "alembic downgrade -1",
     "seed": "ts-node src/scripts/seed.ts",
+    "seed:prod": "node dist/scripts/seed.js",
     "seed:dev": "npm run migration:up && npm run seed"
   },
   "dependencies": {
