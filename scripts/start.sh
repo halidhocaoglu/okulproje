@@ -10,5 +10,12 @@ if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
   cd /app
 fi
 
+if [ "${RUN_SEED:-false}" = "true" ]; then
+  echo "Running seed..."
+  cd /app/backend
+  npm run seed
+  cd /app
+fi
+
 echo "Starting backend..."
 exec node dist/main.js

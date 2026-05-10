@@ -8,5 +8,10 @@ if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
   alembic upgrade head
 fi
 
+if [ "${RUN_SEED:-false}" = "true" ]; then
+  echo "Running seed..."
+  npm run seed
+fi
+
 echo "Starting backend..."
 exec node dist/main.js
