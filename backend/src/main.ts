@@ -70,7 +70,11 @@ async function bootstrap(): Promise<void> {
   app.useLogger(app.get(AppLoggerService));
 
   const port = Number(process.env.PORT ?? 3000);
-  await app.listen(port);
+  const host = process.env.HOST?.trim() || '0.0.0.0';
+  await app.listen(port, host);
+  app
+    .get(AppLoggerService)
+    .log(`Backend listening on ${host}:${port}`, 'Bootstrap');
 }
 
 void bootstrap();
