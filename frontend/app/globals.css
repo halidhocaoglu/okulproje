@@ -5,12 +5,17 @@
 :root {
   --isu-primary: #3880b0;
   --isu-primary-rgb: 56, 128, 176;
+  --isu-primary-bright: #54a4da;
   --isu-primary-deep: #1d4f72;
   --isu-primary-soft: #7fb7dc;
+  --isu-primary-glow: rgba(56, 128, 176, 0.42);
   --isu-ink: #08131d;
   --isu-surface: #102131;
   --isu-surface-2: #162c40;
+  --isu-surface-3: #1b3851;
   --isu-line: rgba(127, 183, 220, 0.16);
+  --isu-line-strong: rgba(127, 183, 220, 0.34);
+  --isu-text-soft: #98b5ca;
 }
 
 html,
@@ -24,6 +29,105 @@ body {
 
 body {
   min-height: 100vh;
+  font-feature-settings: "ss01" on, "cv02" on;
+}
+
+::selection {
+  background: rgba(var(--isu-primary-rgb), 0.34);
+  color: white;
+}
+
+.isu-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  opacity: 0.85;
+  background: radial-gradient(circle, rgba(var(--isu-primary-rgb), 0.44) 0%, rgba(var(--isu-primary-rgb), 0.08) 54%, transparent 76%);
+}
+
+.isu-grid {
+  background-image:
+    linear-gradient(rgba(127, 183, 220, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(127, 183, 220, 0.06) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+.isu-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.isu-sheen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 28%, transparent 72%, rgba(84, 164, 218, 0.08));
+  pointer-events: none;
+}
+
+.isu-panel {
+  border: 1px solid var(--isu-line);
+  background:
+    linear-gradient(180deg, rgba(23, 45, 65, 0.94), rgba(10, 21, 33, 0.94)),
+    linear-gradient(135deg, rgba(var(--isu-primary-rgb), 0.08), transparent 36%);
+  box-shadow:
+    0 22px 90px rgba(4, 10, 16, 0.56),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+}
+
+.isu-accent-ring {
+  box-shadow:
+    0 0 0 1px rgba(var(--isu-primary-rgb), 0.22),
+    0 0 0 6px rgba(var(--isu-primary-rgb), 0.08);
+}
+
+.isu-input {
+  border: 1px solid rgba(127, 183, 220, 0.16);
+  background: linear-gradient(180deg, rgba(6, 15, 24, 0.94), rgba(10, 21, 33, 0.92));
+  color: #f8fbff;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.isu-input::placeholder {
+  color: rgba(152, 181, 202, 0.64);
+}
+
+.isu-input:focus {
+  border-color: rgba(var(--isu-primary-rgb), 0.58);
+  box-shadow:
+    0 0 0 1px rgba(var(--isu-primary-rgb), 0.26),
+    0 0 0 5px rgba(var(--isu-primary-rgb), 0.12),
+    0 10px 30px rgba(var(--isu-primary-rgb), 0.12);
+}
+
+.isu-button-primary {
+  background: linear-gradient(135deg, #54a4da, #3880b0 48%, #25648f 100%);
+  color: #07131d;
+  box-shadow:
+    0 16px 40px rgba(var(--isu-primary-rgb), 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+.isu-button-primary:hover {
+  transform: translateY(-1px);
+  filter: saturate(1.08);
+  box-shadow:
+    0 20px 46px rgba(var(--isu-primary-rgb), 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.isu-button-primary:disabled {
+  transform: none;
+  filter: none;
+  box-shadow: 0 12px 28px rgba(var(--isu-primary-rgb), 0.18);
+}
+
+.isu-chip {
+  border: 1px solid rgba(127, 183, 220, 0.18);
+  background: rgba(6, 15, 24, 0.64);
+  color: var(--isu-text-soft);
 }
 
 .chat-scene {

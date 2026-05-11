@@ -161,30 +161,65 @@ export default function LoginPage() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-slate-950 text-slate-100">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,128,176,0.3),_transparent_28%),radial-gradient(circle_at_bottom_right,_rgba(56,128,176,0.16),_transparent_22%),linear-gradient(180deg,_#07111a_0%,_#0b1824_48%,_#08131d_100%)]" />
-        <div className="absolute inset-0 opacity-50 [background-image:linear-gradient(rgba(127,183,220,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(127,183,220,0.06)_1px,transparent_1px)] [background-size:42px_42px]" />
-        <div className="absolute -left-24 top-20 h-56 w-56 rounded-full bg-[#3880b0]/16 blur-3xl" />
-        <div className="absolute bottom-8 right-0 h-72 w-72 rounded-full bg-[#3880b0]/12 blur-3xl" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(84,164,218,0.36),_transparent_24%),radial-gradient(circle_at_82%_18%,_rgba(56,128,176,0.24),_transparent_18%),linear-gradient(180deg,_#07111a_0%,_#0d1a27_44%,_#08131d_100%)]" />
+        <div className="isu-grid absolute inset-0 opacity-45" />
+        <div className="isu-orb -left-20 top-10 h-72 w-72" />
+        <div className="isu-orb right-[-80px] top-1/4 h-80 w-80" />
+        <div className="isu-orb bottom-[-100px] left-1/3 h-72 w-72 opacity-55" />
+        <div className="absolute inset-x-0 top-0 h-44 bg-[linear-gradient(180deg,rgba(84,164,218,0.16),transparent)]" />
       </div>
 
-      <div className="relative mx-auto flex min-h-screen w-full max-w-md items-center px-4 py-10">
+      <div className="relative mx-auto grid min-h-screen w-full max-w-6xl items-center gap-10 px-4 py-8 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
+        <section className="hidden lg:block">
+          <div className="max-w-xl">
+            <span className="isu-chip inline-flex rounded-full px-4 py-2 text-xs uppercase tracking-[0.34em]">
+              IsuChat Platform
+            </span>
+            <h1 className="mt-6 text-5xl font-semibold leading-[1.02] tracking-[-0.04em] text-white">
+              Üniversite iletişimini
+              <span className="block bg-[linear-gradient(135deg,#bce8ff_0%,#54a4da_32%,#3880b0_64%,#7fb7dc_100%)] bg-clip-text text-transparent">
+                daha canlı bir akışa taşı.
+              </span>
+            </h1>
+            <p className="mt-6 max-w-lg text-base leading-7 text-[color:var(--isu-text-soft)]">
+              Sohbet, materyal paylaşımı, departman akışı ve sosyal bağlantılar tek bir arayüzde birleşiyor.
+              Canlı renkler, hızlı geçişler ve net bir odak ile kampüs içi kullanım için tasarlanmış bir deneyim.
+            </p>
+            <div className="mt-8 grid gap-4 sm:grid-cols-3">
+              <div className="isu-panel isu-sheen rounded-3xl p-4">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-[#7fb7dc]">Realtime</p>
+                <p className="mt-3 text-sm text-slate-200">Canlı sohbet, bildirim ve durum güncellemeleri.</p>
+              </div>
+              <div className="isu-panel isu-sheen rounded-3xl p-4">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-[#7fb7dc]">Academic</p>
+                <p className="mt-3 text-sm text-slate-200">Materyal, ders ve bölüm odaklı tek akış.</p>
+              </div>
+              <div className="isu-panel isu-sheen rounded-3xl p-4">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-[#7fb7dc]">Secure</p>
+                <p className="mt-3 text-sm text-slate-200">Kurumsal hesap modeli ve rol tabanlı alanlar.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="relative mx-auto flex w-full max-w-md items-center lg:justify-end">
         <form
           onSubmit={onSubmit}
-          className="w-full rounded-[2rem] border border-[rgba(127,183,220,0.18)] bg-[linear-gradient(180deg,rgba(18,35,51,0.96),rgba(12,24,37,0.94))] p-6 shadow-[0_24px_90px_rgba(5,12,18,0.55)] backdrop-blur"
+          className="isu-panel isu-sheen w-full rounded-[2rem] p-6 sm:p-7"
         >
-          <div className="mb-6 flex items-center justify-between gap-3">
+          <div className="mb-6 flex items-start justify-between gap-4">
             <div>
               <p className="text-[11px] uppercase tracking-[0.34em] text-[#7fb7dc]">Isu University Network</p>
-              <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white">
+              <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-white">
                 {mode === "login" ? "IsuChat Login" : "IsuChat Register"}
               </h1>
-              <p className="mt-2 text-sm text-slate-400">
+              <p className="mt-2 max-w-sm text-sm leading-6 text-[color:var(--isu-text-soft)]">
                 {mode === "login"
-                  ? "Campus communication, materials, and realtime messaging in one place."
-                  : "Create your university account with the fixed institutional email format."}
+                  ? "Kampüs içi iletişim, materyal paylaşımı ve canlı mesajlaşma için oturum aç."
+                  : "Kurumsal e-posta yapınla yeni hesabını oluştur ve ağın içine katıl."}
               </p>
             </div>
-            <div className="flex rounded-full border border-[rgba(127,183,220,0.24)] bg-[rgba(8,19,29,0.86)] p-1 text-sm shadow-[inset_0_0_0_1px_rgba(56,128,176,0.08)]">
+            <div className="flex rounded-full border border-[rgba(127,183,220,0.24)] bg-[rgba(4,12,20,0.72)] p-1 text-sm shadow-[inset_0_0_0_1px_rgba(56,128,176,0.08)]">
               <button
                 type="button"
                 onClick={() => {
@@ -194,8 +229,8 @@ export default function LoginPage() {
                 }}
                 className={`rounded-full px-4 py-2 transition ${
                   mode === "login"
-                    ? "bg-[#3880b0] font-medium text-[#08131d] shadow-[0_8px_24px_rgba(56,128,176,0.35)]"
-                    : "text-slate-300"
+                    ? "isu-accent-ring bg-[#3880b0] font-medium text-[#08131d] shadow-[0_10px_28px_rgba(56,128,176,0.28)]"
+                    : "text-slate-300 hover:text-white"
                 }`}
               >
                 Login
@@ -209,8 +244,8 @@ export default function LoginPage() {
                 }}
                 className={`rounded-full px-4 py-2 transition ${
                   mode === "register"
-                    ? "bg-[#3880b0] font-medium text-[#08131d] shadow-[0_8px_24px_rgba(56,128,176,0.35)]"
-                    : "text-slate-300"
+                    ? "isu-accent-ring bg-[#3880b0] font-medium text-[#08131d] shadow-[0_10px_28px_rgba(56,128,176,0.28)]"
+                    : "text-slate-300 hover:text-white"
                 }`}
               >
                 Register
@@ -218,12 +253,26 @@ export default function LoginPage() {
             </div>
           </div>
 
+          <div className="mb-6 flex items-center gap-3 rounded-2xl border border-[rgba(127,183,220,0.12)] bg-[rgba(7,17,27,0.72)] px-4 py-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#54a4da,#3880b0)] text-lg font-semibold text-[#07131d] shadow-[0_12px_28px_rgba(56,128,176,0.28)]">
+              İ
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-slate-100">Institutional Access</p>
+              <p className="text-xs text-[color:var(--isu-text-soft)]">
+                {mode === "login"
+                  ? "Hesabına eriş ve kampüs ağına bağlan."
+                  : "Bölümünü seç, kurumsal hesabını oluştur."}
+              </p>
+            </div>
+          </div>
+
           {mode === "login" ? (
             <>
               <label className="mb-4 block">
-                <span className="mb-2 block text-sm text-slate-300">Email</span>
+                <span className="mb-2 block text-sm font-medium text-slate-200">Email</span>
                 <input
-                  className="w-full rounded-xl border border-[rgba(127,183,220,0.18)] bg-[rgba(5,14,24,0.92)] px-4 py-3 outline-none ring-[#3880b0] transition focus:border-[rgba(127,183,220,0.4)] focus:ring-2"
+                  className="isu-input w-full rounded-2xl px-4 py-3.5 outline-none"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   type="email"
@@ -232,9 +281,9 @@ export default function LoginPage() {
                 />
               </label>
               <label className="mb-5 block">
-                <span className="mb-2 block text-sm text-slate-300">Password</span>
+                <span className="mb-2 block text-sm font-medium text-slate-200">Password</span>
                 <input
-                  className="w-full rounded-xl border border-[rgba(127,183,220,0.18)] bg-[rgba(5,14,24,0.92)] px-4 py-3 outline-none ring-[#3880b0] transition focus:border-[rgba(127,183,220,0.4)] focus:ring-2"
+                  className="isu-input w-full rounded-2xl px-4 py-3.5 outline-none"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   type="password"
@@ -246,9 +295,9 @@ export default function LoginPage() {
           ) : (
             <>
               <label className="mb-4 block">
-                <span className="mb-2 block text-sm text-slate-300">Full name</span>
+                <span className="mb-2 block text-sm font-medium text-slate-200">Full name</span>
                 <input
-                  className="w-full rounded-xl border border-[rgba(127,183,220,0.18)] bg-[rgba(5,14,24,0.92)] px-4 py-3 outline-none ring-[#3880b0] transition focus:border-[rgba(127,183,220,0.4)] focus:ring-2"
+                  className="isu-input w-full rounded-2xl px-4 py-3.5 outline-none"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   type="text"
@@ -257,10 +306,11 @@ export default function LoginPage() {
                 />
               </label>
               <label className="mb-4 block">
-                <span className="mb-2 block text-sm text-slate-300">Institutional email username</span>
-                <div className="flex items-center overflow-hidden rounded-xl border border-[rgba(127,183,220,0.18)] bg-[rgba(5,14,24,0.92)]">
+                <span className="mb-2 block text-sm font-medium text-slate-200">Institutional email username</span>
+                <div className="overflow-hidden rounded-2xl border border-[rgba(127,183,220,0.18)] bg-[rgba(5,14,24,0.92)] shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]">
+                  <div className="flex items-center">
                   <input
-                    className="min-w-0 flex-1 bg-transparent px-4 py-3 lowercase outline-none ring-[#3880b0] focus:ring-2"
+                    className="isu-input min-w-0 flex-1 rounded-none border-0 bg-transparent px-4 py-3.5 lowercase outline-none"
                     value={usernamePrefix}
                     onChange={(e) =>
                       setUsernamePrefix(e.target.value.trim().toLowerCase().replace(/\s+/g, ""))
@@ -269,18 +319,19 @@ export default function LoginPage() {
                     type="text"
                     required
                   />
-                  <span className="border-l border-[rgba(127,183,220,0.18)] bg-[rgba(56,128,176,0.08)] px-4 py-3 text-sm font-medium text-[#7fb7dc]">
+                  <span className="border-l border-[rgba(127,183,220,0.14)] bg-[linear-gradient(180deg,rgba(56,128,176,0.18),rgba(56,128,176,0.08))] px-4 py-3.5 text-sm font-semibold text-[#a7d8f4]">
                     {fixedDomain}
                   </span>
+                  </div>
                 </div>
-                <p className="mt-2 text-xs text-slate-500">
+                <p className="mt-2 text-xs leading-5 text-[color:var(--isu-text-soft)]">
                   This will be used as the part before {fixedDomain}. Only letters, numbers, dots, and underscores are allowed.
                 </p>
               </label>
               <label className="mb-4 block">
-                <span className="mb-2 block text-sm text-slate-300">Department</span>
+                <span className="mb-2 block text-sm font-medium text-slate-200">Department</span>
                 <select
-                  className="w-full rounded-xl border border-[rgba(127,183,220,0.18)] bg-[rgba(5,14,24,0.92)] px-4 py-3 outline-none ring-[#3880b0] transition focus:border-[rgba(127,183,220,0.4)] focus:ring-2"
+                  className="isu-input w-full rounded-2xl px-4 py-3.5 outline-none"
                   value={selectedDepartmentId}
                   onChange={(e) => setSelectedDepartmentId(e.target.value)}
                   required
@@ -296,9 +347,9 @@ export default function LoginPage() {
                 </select>
               </label>
               <label className="mb-5 block">
-                <span className="mb-2 block text-sm text-slate-300">Password</span>
+                <span className="mb-2 block text-sm font-medium text-slate-200">Password</span>
                 <input
-                  className="w-full rounded-xl border border-[rgba(127,183,220,0.18)] bg-[rgba(5,14,24,0.92)] px-4 py-3 outline-none ring-[#3880b0] transition focus:border-[rgba(127,183,220,0.4)] focus:ring-2"
+                  className="isu-input w-full rounded-2xl px-4 py-3.5 outline-none"
                   value={registerPassword}
                   onChange={(e) => setRegisterPassword(e.target.value)}
                   type="password"
@@ -309,14 +360,14 @@ export default function LoginPage() {
             </>
           )}
           {error ? (
-            <p className="mb-4 rounded-2xl border border-rose-900/60 bg-rose-950/30 px-4 py-3 text-sm text-rose-300">
+            <p className="mb-4 rounded-2xl border border-rose-500/30 bg-rose-950/30 px-4 py-3 text-sm text-rose-200 shadow-[0_0_0_1px_rgba(251,113,133,0.08)]">
               {error}
             </p>
           ) : null}
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-[#3880b0] px-4 py-3 font-medium text-[#08131d] shadow-[0_14px_34px_rgba(56,128,176,0.34)] transition hover:bg-[#4c90bd] disabled:cursor-not-allowed disabled:opacity-70"
+            className="isu-button-primary w-full rounded-2xl px-4 py-3.5 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-70"
           >
             {loading
               ? mode === "login"
@@ -326,7 +377,12 @@ export default function LoginPage() {
                 ? "Login"
                 : "Register"}
           </button>
+          <div className="mt-4 flex items-center justify-between gap-4 text-xs text-[color:var(--isu-text-soft)]">
+            <span>Primary palette: #3880b0</span>
+            <span>{mode === "login" ? "Secure session access" : "Institutional account setup"}</span>
+          </div>
         </form>
+        </div>
       </div>
     </main>
   );
