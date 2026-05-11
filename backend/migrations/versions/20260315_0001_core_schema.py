@@ -53,6 +53,7 @@ def upgrade() -> None:
             full_name varchar(200) NOT NULL,
             password_hash varchar(255) NOT NULL,
             role varchar(32) NOT NULL DEFAULT 'student',
+            is_active boolean NOT NULL DEFAULT true,
             status varchar(32) NOT NULL DEFAULT 'active',
             bio text NULL,
             onboarding_completed boolean NOT NULL DEFAULT false,
