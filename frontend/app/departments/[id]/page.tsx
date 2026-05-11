@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+
 import {
   AcademicMaterial,
   Course,
@@ -11,7 +12,7 @@ import {
   getCourses,
   getDepartmentById,
   getGroups,
-  getMaterials
+  getMaterials,
 } from "../../../lib/api";
 import { clearAccessToken, getAccessToken } from "../../../lib/auth";
 import { NotificationBell } from "../../../components/notification-bell";
@@ -45,7 +46,7 @@ export default function DepartmentDetailPage() {
         getDepartmentById(departmentId),
         getMaterials({ departmentId }),
         getCourses(),
-        getGroups()
+        getGroups(),
       ]);
 
       setDepartment(departmentData);
@@ -56,8 +57,8 @@ export default function DepartmentDetailPage() {
         groupList.filter((group) =>
           [group.name, group.description]
             .filter(Boolean)
-            .some((value) => String(value).toLowerCase().includes(query))
-        )
+            .some((value) => String(value).toLowerCase().includes(query)),
+        ),
       );
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to load department.";
@@ -83,98 +84,141 @@ export default function DepartmentDetailPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 px-4 py-4 text-slate-100">
-      <div className="mx-auto max-w-6xl">
-        <header className="mb-4 flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900 px-4 py-3">
-          <div className="flex items-center gap-3 text-sm">
-            <Link href="/departments" className="rounded-md px-2 py-1 hover:bg-slate-800">Departments</Link>
-            <Link href="/courses" className="rounded-md px-2 py-1 hover:bg-slate-800">Courses</Link>
-            <Link href="/materials" className="rounded-md px-2 py-1 hover:bg-slate-800">Materials</Link>
-            <Link href="/groups" className="rounded-md px-2 py-1 hover:bg-slate-800">Groups</Link>
-          </div>
-          <div className="flex items-center gap-2">
-            <NotificationBell />
-            <button onClick={logout} className="rounded-md border border-slate-700 px-3 py-1 text-sm hover:bg-slate-800">
-              Logout
-            </button>
+    <main className="isu-dashboard-scene relative min-h-screen overflow-x-hidden text-slate-100">
+      <div className="isu-soft-pattern pointer-events-none absolute inset-0" />
+      <div className="isu-orb left-[-8rem] top-10 h-72 w-72 opacity-58" />
+      <div className="isu-orb bottom-[-10rem] right-[-5rem] h-96 w-96 opacity-50" />
+      <div className="relative mx-auto max-w-7xl px-4 py-4 sm:px-5 lg:px-6">
+        <header className="isu-topbar relative mb-5 overflow-hidden rounded-[1.75rem] px-5 py-5">
+          <div className="isu-sheen" />
+          <div className="relative flex flex-col gap-5">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-2xl">
+                <p className="text-xs uppercase tracking-[0.34em] text-[#7fb7dc]">Department detail</p>
+                <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                  {department?.name ?? "Department workspace"}
+                </h1>
+                <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--isu-text-soft)] sm:text-base">
+                  Courses, materials, and related groups now sit in one clearer academic overview.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 self-start">
+                <NotificationBell />
+                <button
+                  onClick={logout}
+                  className="isu-chip rounded-2xl px-4 py-2 text-sm text-slate-200 hover:bg-[rgba(56,128,176,0.16)]"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-[1.2fr,1fr,1fr,1fr]">
+              <nav className="flex flex-wrap gap-2 rounded-[1.4rem] border border-[rgba(127,183,220,0.14)] bg-[rgba(7,17,27,0.4)] p-2 text-sm">
+                <Link href="/departments" className="isu-button-primary rounded-full px-4 py-2 font-medium">Departments</Link>
+                <Link href="/courses" className="isu-chip rounded-full px-4 py-2 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Courses</Link>
+                <Link href="/materials" className="isu-chip rounded-full px-4 py-2 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Materials</Link>
+                <Link href="/groups" className="isu-chip rounded-full px-4 py-2 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Groups</Link>
+              </nav>
+
+              <div className="isu-stat-card rounded-[1.4rem] px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.24em] text-[#7fb7dc]">Courses</p>
+                <p className="mt-3 text-3xl font-semibold text-white">{courses.length}</p>
+                <p className="mt-2 text-sm text-[var(--isu-text-soft)]">Active courses mapped to this department.</p>
+              </div>
+
+              <div className="isu-stat-card rounded-[1.4rem] px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.24em] text-[#7fb7dc]">Materials</p>
+                <p className="mt-3 text-3xl font-semibold text-white">{materials.length}</p>
+                <p className="mt-2 text-sm text-[var(--isu-text-soft)]">Shared resources already attached here.</p>
+              </div>
+
+              <div className="isu-stat-card rounded-[1.4rem] px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.24em] text-[#7fb7dc]">Groups</p>
+                <p className="mt-3 text-3xl font-semibold text-white">{groups.length}</p>
+                <p className="mt-2 text-sm text-[var(--isu-text-soft)]">Matching communities and subject spaces.</p>
+              </div>
+            </div>
           </div>
         </header>
 
         {loading ? <p className="text-sm text-slate-400">Loading department...</p> : null}
-        {error ? <p className="text-sm text-rose-400">{error}</p> : null}
+        {error ? <p className="rounded-2xl border border-rose-800/50 bg-rose-950/20 px-4 py-3 text-sm text-rose-300">{error}</p> : null}
 
         {!loading && !error && department ? (
-          <div className="space-y-4">
-            <section className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{department.code || "Department"}</p>
-              <h1 className="mt-2 text-2xl font-semibold">{department.name}</h1>
-              <p className="mt-3 max-w-3xl text-sm text-slate-400">
+          <div className="space-y-5">
+            <section className="isu-panel rounded-[1.75rem] p-5">
+              <p className="text-xs uppercase tracking-[0.24em] text-[#7fb7dc]">{department.code || "Department"}</p>
+              <h2 className="mt-2 text-2xl font-semibold text-white">{department.name}</h2>
+              <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300">
                 {department.description || "No department description available."}
               </p>
             </section>
 
-            <section className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-              <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-lg font-semibold">Related Courses</h2>
-                <Link href="/courses" className="text-sm text-cyan-300 hover:text-cyan-200">Browse all courses</Link>
-              </div>
-              {courses.length === 0 ? (
-                <p className="text-sm text-slate-400">No active courses found for this department.</p>
-              ) : (
-                <div className="grid gap-3 md:grid-cols-2">
-                  {courses.map((course) => (
-                    <Link key={course.id} href={`/courses/${course.id}`} className="rounded-lg border border-slate-800 bg-slate-950 p-4 hover:border-slate-700">
-                      <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{course.code || "Course"}</p>
-                      <h3 className="mt-2 font-medium">{course.name}</h3>
-                      <p className="mt-2 text-sm text-slate-400">{course.description || "No course description."}</p>
-                    </Link>
-                  ))}
+            <div className="grid gap-5 xl:grid-cols-3">
+              <section className="isu-panel rounded-[1.75rem] p-5">
+                <div className="mb-4 flex items-end justify-between gap-3">
+                  <h3 className="text-lg font-semibold text-white">Related courses</h3>
+                  <Link href="/courses" className="text-sm text-[#bde4ff] hover:text-white">Browse all</Link>
                 </div>
-              )}
-            </section>
+                {courses.length === 0 ? (
+                  <p className="text-sm text-slate-400">No active courses found for this department.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {courses.map((course) => (
+                      <Link key={course.id} href={`/courses/${course.id}`} className="block rounded-[1.4rem] border border-[rgba(127,183,220,0.14)] bg-[rgba(8,19,29,0.72)] p-4 transition hover:border-[rgba(127,183,220,0.3)]">
+                        <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{course.code || "Course"}</p>
+                        <h4 className="mt-2 font-semibold text-white">{course.name}</h4>
+                        <p className="mt-2 text-sm text-[var(--isu-text-soft)]">{course.description || "No course description."}</p>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </section>
 
-            <section className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-              <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-lg font-semibold">Related Materials</h2>
-                <Link href={`/materials?department=${department.id}`} className="text-sm text-cyan-300 hover:text-cyan-200">
-                  Open materials
-                </Link>
-              </div>
-              {materials.length === 0 ? (
-                <p className="text-sm text-slate-400">No materials have been shared for this department yet.</p>
-              ) : (
-                <div className="space-y-3">
-                  {materials.slice(0, 8).map((material) => (
-                    <Link key={material.id} href={`/materials/${material.id}`} className="block rounded-lg border border-slate-800 bg-slate-950 p-4 hover:border-slate-700">
-                      <h3 className="font-medium">{material.title}</h3>
-                      <p className="mt-2 text-sm text-slate-400">{material.description || "No description."}</p>
-                    </Link>
-                  ))}
+              <section className="isu-panel rounded-[1.75rem] p-5">
+                <div className="mb-4 flex items-end justify-between gap-3">
+                  <h3 className="text-lg font-semibold text-white">Related materials</h3>
+                  <Link href={`/materials?department=${department.id}`} className="text-sm text-[#bde4ff] hover:text-white">
+                    Open materials
+                  </Link>
                 </div>
-              )}
-            </section>
+                {materials.length === 0 ? (
+                  <p className="text-sm text-slate-400">No materials have been shared for this department yet.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {materials.slice(0, 8).map((material) => (
+                      <Link key={material.id} href={`/materials/${material.id}`} className="block rounded-[1.4rem] border border-[rgba(127,183,220,0.14)] bg-[rgba(8,19,29,0.72)] p-4 transition hover:border-[rgba(127,183,220,0.3)]">
+                        <h4 className="font-semibold text-white">{material.title}</h4>
+                        <p className="mt-2 text-sm text-[var(--isu-text-soft)]">{material.description || "No description."}</p>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </section>
 
-            <section className="rounded-xl border border-slate-800 bg-slate-900 p-5">
-              <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-lg font-semibold">Related Groups</h2>
-                <Link href="/groups" className="text-sm text-cyan-300 hover:text-cyan-200">Browse groups</Link>
-              </div>
-              {groups.length === 0 ? (
-                <div className="space-y-2">
-                  <p className="text-sm text-slate-400">No matching groups found for this department.</p>
-                  {relatedGroupsNote ? <p className="text-xs text-slate-500">{relatedGroupsNote}</p> : null}
+              <section className="isu-panel rounded-[1.75rem] p-5">
+                <div className="mb-4 flex items-end justify-between gap-3">
+                  <h3 className="text-lg font-semibold text-white">Related groups</h3>
+                  <Link href="/groups" className="text-sm text-[#bde4ff] hover:text-white">Browse groups</Link>
                 </div>
-              ) : (
-                <div className="grid gap-3 md:grid-cols-2">
-                  {groups.map((group) => (
-                    <Link key={group.id} href={`/groups/${group.id}`} className="rounded-lg border border-slate-800 bg-slate-950 p-4 hover:border-slate-700">
-                      <h3 className="font-medium">{group.name}</h3>
-                      <p className="mt-2 text-sm text-slate-400">{group.description || "No description."}</p>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </section>
+                {groups.length === 0 ? (
+                  <div className="space-y-2">
+                    <p className="text-sm text-slate-400">No matching groups found for this department.</p>
+                    {relatedGroupsNote ? <p className="text-xs text-slate-500">{relatedGroupsNote}</p> : null}
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {groups.map((group) => (
+                      <Link key={group.id} href={`/groups/${group.id}`} className="block rounded-[1.4rem] border border-[rgba(127,183,220,0.14)] bg-[rgba(8,19,29,0.72)] p-4 transition hover:border-[rgba(127,183,220,0.3)]">
+                        <h4 className="font-semibold text-white">{group.name}</h4>
+                        <p className="mt-2 text-sm text-[var(--isu-text-soft)]">{group.description || "No description."}</p>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </section>
+            </div>
           </div>
         ) : null}
       </div>

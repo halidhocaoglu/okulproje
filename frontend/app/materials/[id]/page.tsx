@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+
 import {
   AcademicMaterial,
   ApiError,
@@ -20,7 +21,7 @@ import {
   removeMaterialVote,
   reportMaterial,
   updateMaterial,
-  voteMaterial
+  voteMaterial,
 } from "../../../lib/api";
 import { clearAccessToken, getAccessToken } from "../../../lib/auth";
 import { NotificationBell } from "../../../components/notification-bell";
@@ -79,6 +80,10 @@ export default function MaterialDetailPage() {
     return ["super_admin", "school_admin", "moderator"].includes(currentUser.role ?? "");
   }, [currentUser, material]);
 
+  const statTags = material?.tags?.length ?? 0;
+  const statVotes = material?.voteCount ?? 0;
+  const statComments = comments.length;
+
   async function bootstrapPage() {
     setLoading(true);
     setError(null);
@@ -87,7 +92,7 @@ export default function MaterialDetailPage() {
         getCurrentUser(),
         getMaterialById(materialId),
         getMaterialComments(materialId),
-        getDepartments()
+        getDepartments(),
       ]);
       setCurrentUser(user);
       setDepartments(departmentsResponse);
@@ -138,9 +143,7 @@ export default function MaterialDetailPage() {
   }
 
   function isUuid(value: string) {
-    return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-      value
-    );
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
   }
 
   function parseTags(value: string) {
@@ -183,9 +186,9 @@ export default function MaterialDetailPage() {
                 ...prev,
                 myVote: 0,
                 voteCount: Math.max((prev.voteCount ?? 1) - 1, 0),
-                voteScore: Math.max((prev.voteScore ?? 1) - 1, 0)
+                voteScore: Math.max((prev.voteScore ?? 1) - 1, 0),
               }
-            : prev
+            : prev,
         );
       } else {
         await voteMaterial(materialId, 1);
@@ -196,9 +199,9 @@ export default function MaterialDetailPage() {
                 ...prev,
                 myVote: 1,
                 voteCount: (prev.voteCount ?? 0) + 1,
-                voteScore: (prev.voteScore ?? 0) + 1
+                voteScore: (prev.voteScore ?? 0) + 1,
               }
-            : prev
+            : prev,
         );
       }
     } catch (err) {
@@ -270,10 +273,9 @@ export default function MaterialDetailPage() {
       const updated = await updateMaterial(material.id, {
         title: normalizedTitle,
         description: editDescription.trim() || undefined,
-        departmentId:
-          safeDepartmentId && isUuid(safeDepartmentId) ? safeDepartmentId : undefined,
+        departmentId: safeDepartmentId && isUuid(safeDepartmentId) ? safeDepartmentId : undefined,
         courseId: safeCourseId && isUuid(safeCourseId) ? safeCourseId : undefined,
-        tags: parseTags(editTags)
+        tags: parseTags(editTags),
       });
       applyMaterialState(updated);
       setIsEditing(false);
@@ -321,279 +323,314 @@ export default function MaterialDetailPage() {
   }
 
   return (
-    <main className="materials-scene relative min-h-screen overflow-hidden text-slate-100">
+    <main className="materials-scene relative min-h-screen overflow-x-hidden text-slate-100">
       <div className="materials-pattern pointer-events-none absolute inset-0" />
-      <div className="relative mx-auto max-w-5xl px-4 py-4">
-        <header className="mb-4 flex items-center justify-between rounded-2xl border border-[rgba(127,183,220,0.16)] bg-[rgba(16,33,49,0.9)] px-4 py-3 shadow-[0_20px_80px_rgba(8,19,29,0.35)] backdrop-blur">
-          <div className="flex items-center gap-3 text-sm">
-            <Link href="/chat" className="rounded-full px-3 py-1.5 hover:bg-[rgba(56,128,176,0.12)]">
-              Chat
-            </Link>
-            <Link
-              href="/materials"
-              className="rounded-full bg-[#3880b0] px-3 py-1.5 font-medium text-[#08131d]"
-            >
-              Materials
-            </Link>
-            <Link href="/search" className="rounded-full px-3 py-1.5 hover:bg-[rgba(56,128,176,0.12)]">
-              Search
-            </Link>
-          </div>
-          <div className="flex items-center gap-2">
-            <NotificationBell />
-            <button
-              onClick={logout}
-              className="rounded-full border border-[rgba(127,183,220,0.2)] px-3 py-1.5 text-sm hover:bg-[rgba(56,128,176,0.12)]"
-            >
-              Logout
-            </button>
+      <div className="isu-orb left-[-8rem] top-10 h-72 w-72 opacity-60" />
+      <div className="isu-orb bottom-[-10rem] right-[-5rem] h-96 w-96 opacity-50" />
+      <div className="relative mx-auto max-w-7xl px-4 py-4 sm:px-5 lg:px-6">
+        <header className="isu-topbar relative mb-5 overflow-hidden rounded-[1.75rem] px-5 py-5">
+          <div className="isu-sheen" />
+          <div className="relative flex flex-col gap-5">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-2xl">
+                <p className="text-xs uppercase tracking-[0.34em] text-[#7fb7dc]">Material detail</p>
+                <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                  {material?.title ?? "Resource detail"}
+                </h1>
+                <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--isu-text-soft)] sm:text-base)">
+                  Review comments, edit metadata, and manage signals like votes and bookmarks in one calmer workspace.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 self-start">
+                <NotificationBell />
+                <button
+                  onClick={logout}
+                  className="isu-chip rounded-2xl px-4 py-2 text-sm text-slate-200 hover:bg-[rgba(56,128,176,0.16)]"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-[1.2fr,1fr,1fr,1fr]">
+              <nav className="flex flex-wrap gap-2 rounded-[1.4rem] border border-[rgba(127,183,220,0.14)] bg-[rgba(7,17,27,0.4)] p-2 text-sm">
+                <Link href="/chat" className="isu-chip rounded-full px-4 py-2 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Chat</Link>
+                <Link href="/materials" className="isu-button-primary rounded-full px-4 py-2 font-medium">Materials</Link>
+                <Link href="/search" className="isu-chip rounded-full px-4 py-2 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Search</Link>
+                <Link href="/departments" className="isu-chip rounded-full px-4 py-2 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Departments</Link>
+              </nav>
+
+              <div className="isu-stat-card rounded-[1.4rem] px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.24em] text-[#7fb7dc]">Votes</p>
+                <p className="mt-3 text-3xl font-semibold text-white">{statVotes}</p>
+                <p className="mt-2 text-sm text-[var(--isu-text-soft)]">Current community endorsement count.</p>
+              </div>
+
+              <div className="isu-stat-card rounded-[1.4rem] px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.24em] text-[#7fb7dc]">Comments</p>
+                <p className="mt-3 text-3xl font-semibold text-white">{statComments}</p>
+                <p className="mt-2 text-sm text-[var(--isu-text-soft)]">Discussion entries attached to this item.</p>
+              </div>
+
+              <div className="isu-stat-card rounded-[1.4rem] px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.24em] text-[#7fb7dc]">Tags</p>
+                <p className="mt-3 text-3xl font-semibold text-white">{statTags}</p>
+                <p className="mt-2 text-sm text-[var(--isu-text-soft)]">Label count for discovery and filtering.</p>
+              </div>
+            </div>
           </div>
         </header>
 
         {loading ? (
-          <section className="rounded-2xl border border-[rgba(127,183,220,0.16)] bg-[rgba(16,33,49,0.88)] p-6 text-sm text-slate-400 backdrop-blur">
-            Loading material...
-          </section>
+          <section className="isu-panel rounded-[1.75rem] p-6 text-sm text-slate-400">Loading material...</section>
         ) : !material ? (
-          <section className="rounded-2xl border border-[rgba(127,183,220,0.16)] bg-[rgba(16,33,49,0.88)] p-6 text-sm text-slate-400 backdrop-blur">
-            Material not found.
-          </section>
+          <section className="isu-panel rounded-[1.75rem] p-6 text-sm text-slate-400">Material not found.</section>
         ) : (
-          <div className="space-y-4">
-            <section className="rounded-2xl border border-[rgba(127,183,220,0.16)] bg-[rgba(16,33,49,0.88)] p-4 shadow-[0_20px_80px_rgba(8,19,29,0.28)] backdrop-blur">
-              <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.24em] text-[#7fb7dc]">Material Detail</p>
-                  <h1 className="mt-1 text-2xl font-semibold">{material.title}</h1>
-                  <p className="mt-2 text-sm text-slate-400">
-                    Uploaded by {material.uploader?.fullName || material.uploader?.username || "Unknown User"}
-                  </p>
-                </div>
-                {canManageMaterial ? (
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      onClick={() => {
-                        setIsEditing((prev) => !prev);
-                        setConfirmDelete(false);
-                        setError(null);
-                        setSuccess(null);
-                      }}
-                      className="rounded-full border border-[rgba(127,183,220,0.2)] px-3 py-1.5 text-sm hover:bg-[rgba(56,128,176,0.12)]"
-                    >
-                      {isEditing ? "Cancel Edit" : "Edit"}
-                    </button>
-                    <button
-                      onClick={() => {
-                        setConfirmDelete(true);
-                        setIsEditing(false);
-                        setError(null);
-                        setSuccess(null);
-                      }}
-                      className="rounded-full border border-rose-400/35 px-3 py-1.5 text-sm text-rose-200 hover:bg-rose-500/10"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                ) : null}
-              </div>
-
-              <div className="mb-4 flex flex-wrap gap-3 text-xs text-slate-400">
-                <span>Created: {formatDate(material.createdAt)}</span>
-                <span>Updated: {formatDate(material.updatedAt ?? material.createdAt)}</span>
-                <span>Department: {material.department?.name || material.departmentId || "-"}</span>
-                <span>Course: {material.course?.name || material.courseId || "-"}</span>
-                <span>Votes: {material.voteCount ?? 0}</span>
-              </div>
-
-              {!isEditing ? (
-                <>
-                  <p className="mb-4 whitespace-pre-wrap text-sm text-slate-300">
-                    {material.description || "No description."}
-                  </p>
-                  {material.tags?.length ? (
-                    <div className="mb-4 flex flex-wrap gap-1.5">
-                      {material.tags.map((tag, index) => (
-                        <span
-                          key={`${material.id}-detail-tag-${tag.name}-${index}`}
-                          className="rounded-full bg-[rgba(56,128,176,0.14)] px-2 py-0.5 text-[11px] text-[#b4d8ee]"
-                        >
-                          {tag.name}
-                        </span>
-                      ))}
+          <div className="grid gap-5 xl:grid-cols-[1.05fr,0.95fr]">
+            <section className="space-y-5">
+              <section className="isu-panel rounded-[1.75rem] p-5">
+                <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm text-slate-400">
+                      Uploaded by {material.uploader?.fullName || material.uploader?.username || "Unknown User"}
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-400">
+                      <span>Created: {formatDate(material.createdAt)}</span>
+                      <span>Updated: {formatDate(material.updatedAt ?? material.createdAt)}</span>
                     </div>
-                  ) : (
-                    <p className="mb-4 text-sm text-slate-500">No tags yet.</p>
-                  )}
-                </>
-              ) : (
-                <form onSubmit={onSaveMaterial} className="mb-4 grid gap-3 sm:grid-cols-2">
-                  <label className="block sm:col-span-2">
-                    <span className="mb-1 block text-xs text-slate-400">Title</span>
-                    <input
-                      value={editTitle}
-                      onChange={(event) => setEditTitle(event.target.value)}
-                      className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
-                    />
-                  </label>
-                  <label className="block sm:col-span-2">
-                    <span className="mb-1 block text-xs text-slate-400">Description</span>
-                    <textarea
-                      value={editDescription}
-                      onChange={(event) => setEditDescription(event.target.value)}
-                      rows={4}
-                      className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
-                    />
-                  </label>
+                  </div>
+                  {canManageMaterial ? (
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        onClick={() => {
+                          setIsEditing((prev) => !prev);
+                          setConfirmDelete(false);
+                          setError(null);
+                          setSuccess(null);
+                        }}
+                        className="isu-chip rounded-full px-4 py-2 text-sm text-slate-200 hover:bg-[rgba(56,128,176,0.16)]"
+                      >
+                        {isEditing ? "Cancel Edit" : "Edit"}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setConfirmDelete(true);
+                          setIsEditing(false);
+                          setError(null);
+                          setSuccess(null);
+                        }}
+                        className="rounded-full border border-rose-400/35 px-4 py-2 text-sm text-rose-200 hover:bg-rose-500/10"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  ) : null}
+                </div>
+
+                {!isEditing ? (
+                  <>
+                    <p className="whitespace-pre-wrap text-sm leading-7 text-slate-300">
+                      {material.description || "No description."}
+                    </p>
+                    <div className="mt-5 grid gap-3 md:grid-cols-2">
+                      <div className="isu-subtle-card rounded-[1.4rem] px-4 py-4 text-sm text-slate-300">
+                        <p><span className="text-slate-400">Department:</span> {material.department?.name || material.departmentId || "-"}</p>
+                        <p className="mt-2"><span className="text-slate-400">Course:</span> {material.course?.name || material.courseId || "-"}</p>
+                        <p className="mt-2"><span className="text-slate-400">Bookmarked:</span> {isBookmarked ? "Yes" : "No"}</p>
+                      </div>
+                      <div className="isu-subtle-card rounded-[1.4rem] px-4 py-4">
+                        {material.tags?.length ? (
+                          <div className="flex flex-wrap gap-1.5">
+                            {material.tags.map((tag, index) => (
+                              <span
+                                key={`${material.id}-detail-tag-${tag.name}-${index}`}
+                                className="rounded-full bg-[rgba(56,128,176,0.14)] px-2 py-0.5 text-[11px] text-[#b4d8ee]"
+                              >
+                                {tag.name}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-sm text-slate-500">No tags yet.</p>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <form onSubmit={onSaveMaterial} className="grid gap-3 sm:grid-cols-2">
+                    <label className="block sm:col-span-2">
+                      <span className="mb-2 block text-xs uppercase tracking-[0.22em] text-slate-400">Title</span>
+                      <input
+                        value={editTitle}
+                        onChange={(event) => setEditTitle(event.target.value)}
+                        className="isu-input w-full rounded-2xl px-4 py-3 text-sm"
+                      />
+                    </label>
+                    <label className="block sm:col-span-2">
+                      <span className="mb-2 block text-xs uppercase tracking-[0.22em] text-slate-400">Description</span>
+                      <textarea
+                        value={editDescription}
+                        onChange={(event) => setEditDescription(event.target.value)}
+                        rows={4}
+                        className="isu-input w-full rounded-2xl px-4 py-3 text-sm"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="mb-2 block text-xs uppercase tracking-[0.22em] text-slate-400">Department</span>
+                      <select
+                        value={editDepartmentId}
+                        onChange={(event) => setEditDepartmentId(event.target.value)}
+                        className="isu-input w-full rounded-2xl bg-[rgba(8,19,29,0.94)] px-4 py-3 text-sm text-slate-100"
+                      >
+                        <option value="" className="bg-[#0b1722] text-slate-100">No department</option>
+                        {departments.map((department) => (
+                          <option key={department.id} value={department.id} className="bg-[#0b1722] text-slate-100">
+                            {department.name}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="block">
+                      <span className="mb-2 block text-xs uppercase tracking-[0.22em] text-slate-400">Course ID</span>
+                      <input
+                        value={editCourseId}
+                        onChange={(event) => setEditCourseId(event.target.value)}
+                        placeholder="Optional course UUID"
+                        className="isu-input w-full rounded-2xl px-4 py-3 text-sm"
+                      />
+                    </label>
+                    <label className="block sm:col-span-2">
+                      <span className="mb-2 block text-xs uppercase tracking-[0.22em] text-slate-400">Tags</span>
+                      <input
+                        value={editTags}
+                        onChange={(event) => setEditTags(event.target.value)}
+                        placeholder="comma, separated, tags"
+                        className="isu-input w-full rounded-2xl px-4 py-3 text-sm"
+                      />
+                    </label>
+                    <div className="sm:col-span-2 flex flex-wrap gap-2">
+                      <button
+                        type="submit"
+                        disabled={saveLoading}
+                        className="isu-button-primary rounded-2xl px-5 py-3 text-sm font-semibold disabled:opacity-70"
+                      >
+                        {saveLoading ? "Saving..." : "Save Changes"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (material) {
+                            applyMaterialState(material);
+                          }
+                          setIsEditing(false);
+                        }}
+                        className="isu-chip rounded-2xl px-5 py-3 text-sm text-slate-200 hover:bg-[rgba(56,128,176,0.16)]"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                )}
+
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <button
+                    onClick={onVote}
+                    disabled={actionLoading}
+                    className="isu-button-primary rounded-full px-4 py-2 text-sm font-medium disabled:opacity-70"
+                  >
+                    {hasVoted ? "Remove Vote" : "Vote"}
+                  </button>
+                  <button
+                    onClick={onBookmark}
+                    disabled={actionLoading}
+                    className="isu-chip rounded-full px-4 py-2 text-sm text-slate-200 hover:bg-[rgba(56,128,176,0.16)] disabled:opacity-70"
+                  >
+                    {isBookmarked ? "Remove Bookmark" : "Bookmark"}
+                  </button>
+                  <button
+                    onClick={onReport}
+                    disabled={actionLoading}
+                    className="rounded-full border border-rose-400/35 px-4 py-2 text-sm text-rose-200 hover:bg-rose-500/10 disabled:opacity-70"
+                  >
+                    Report
+                  </button>
+                </div>
+
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
                   <label className="block">
-                    <span className="mb-1 block text-xs text-slate-400">Department</span>
+                    <span className="mb-2 block text-xs uppercase tracking-[0.22em] text-slate-400">Report reason</span>
                     <select
-                      value={editDepartmentId}
-                      onChange={(event) => setEditDepartmentId(event.target.value)}
-                      className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
+                      value={reportReason}
+                      onChange={(event) => setReportReason(event.target.value as ReportReason)}
+                      className="isu-input w-full rounded-2xl bg-[rgba(8,19,29,0.94)] px-4 py-3 text-sm text-slate-100"
                     >
-                      <option value="">No department</option>
-                      {departments.map((department) => (
-                        <option key={department.id} value={department.id}>
-                          {department.name}
-                        </option>
-                      ))}
+                      <option value="inappropriate_content" className="bg-[#0b1722] text-slate-100">Inappropriate content</option>
+                      <option value="spam" className="bg-[#0b1722] text-slate-100">Spam</option>
+                      <option value="harassment" className="bg-[#0b1722] text-slate-100">Harassment</option>
+                      <option value="hate_speech" className="bg-[#0b1722] text-slate-100">Hate speech</option>
+                      <option value="copyright" className="bg-[#0b1722] text-slate-100">Copyright</option>
+                      <option value="misinformation" className="bg-[#0b1722] text-slate-100">Misinformation</option>
+                      <option value="other" className="bg-[#0b1722] text-slate-100">Other</option>
                     </select>
                   </label>
                   <label className="block">
-                    <span className="mb-1 block text-xs text-slate-400">Course ID</span>
+                    <span className="mb-2 block text-xs uppercase tracking-[0.22em] text-slate-400">Report description</span>
                     <input
-                      value={editCourseId}
-                      onChange={(event) => setEditCourseId(event.target.value)}
-                      placeholder="Optional course UUID"
-                      className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
+                      value={reportDescription}
+                      onChange={(event) => setReportDescription(event.target.value)}
+                      className="isu-input w-full rounded-2xl px-4 py-3 text-sm"
                     />
                   </label>
-                  <label className="block sm:col-span-2">
-                    <span className="mb-1 block text-xs text-slate-400">Tags</span>
-                    <input
-                      value={editTags}
-                      onChange={(event) => setEditTags(event.target.value)}
-                      placeholder="comma, separated, tags"
-                      className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
-                    />
-                  </label>
-                  <div className="sm:col-span-2 flex flex-wrap gap-2">
-                    <button
-                      type="submit"
-                      disabled={saveLoading}
-                      className="rounded-full bg-[#3880b0] px-4 py-2 text-sm font-medium text-[#08131d] hover:bg-[#4e93c1] disabled:cursor-not-allowed disabled:opacity-70"
-                    >
-                      {saveLoading ? "Saving..." : "Save Changes"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (material) {
-                          applyMaterialState(material);
-                        }
-                        setIsEditing(false);
-                      }}
-                      className="rounded-full border border-[rgba(127,183,220,0.2)] px-4 py-2 text-sm hover:bg-[rgba(56,128,176,0.12)]"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </form>
-              )}
+                </div>
 
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={onVote}
-                  disabled={actionLoading}
-                  className="rounded-full bg-[#3880b0] px-3 py-2 text-sm font-medium text-[#08131d] hover:bg-[#4e93c1] disabled:opacity-70"
-                >
-                  {hasVoted ? "Remove Vote" : "Vote"}
-                </button>
-                <button
-                  onClick={onBookmark}
-                  disabled={actionLoading}
-                  className="rounded-full border border-[rgba(127,183,220,0.2)] px-3 py-2 text-sm hover:bg-[rgba(56,128,176,0.12)] disabled:opacity-70"
-                >
-                  {isBookmarked ? "Remove Bookmark" : "Bookmark"}
-                </button>
-                <button
-                  onClick={onReport}
-                  disabled={actionLoading}
-                  className="rounded-full border border-rose-400/35 px-3 py-2 text-sm text-rose-200 hover:bg-rose-500/10 disabled:opacity-70"
-                >
-                  Report
-                </button>
-              </div>
-
-              <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                <label className="block">
-                  <span className="mb-1 block text-xs text-slate-400">Report reason</span>
-                  <select
-                    value={reportReason}
-                    onChange={(event) => setReportReason(event.target.value as ReportReason)}
-                    className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
-                  >
-                    <option value="inappropriate_content">Inappropriate content</option>
-                    <option value="spam">Spam</option>
-                    <option value="harassment">Harassment</option>
-                    <option value="hate_speech">Hate speech</option>
-                    <option value="copyright">Copyright</option>
-                    <option value="misinformation">Misinformation</option>
-                    <option value="other">Other</option>
-                  </select>
-                </label>
-                <label className="block">
-                  <span className="mb-1 block text-xs text-slate-400">Report description</span>
-                  <input
-                    value={reportDescription}
-                    onChange={(event) => setReportDescription(event.target.value)}
-                    className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
-                  />
-                </label>
-              </div>
-
-              {error ? <p className="mt-3 text-sm text-rose-400">{error}</p> : null}
-              {success ? <p className="mt-3 text-sm text-emerald-400">{success}</p> : null}
+                {error ? <p className="mt-4 text-sm text-rose-400">{error}</p> : null}
+                {success ? <p className="mt-4 text-sm text-emerald-400">{success}</p> : null}
+              </section>
             </section>
 
-            <section className="rounded-2xl border border-[rgba(127,183,220,0.16)] bg-[rgba(16,33,49,0.88)] p-4 shadow-[0_20px_80px_rgba(8,19,29,0.28)] backdrop-blur">
-              <h2 className="mb-3 text-lg font-semibold">Comments</h2>
-              <form onSubmit={onSubmitComment} className="mb-4 flex gap-2">
-                <input
-                  value={commentInput}
-                  onChange={(event) => setCommentInput(event.target.value)}
-                  placeholder="Write a comment..."
-                  className="flex-1 rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
-                />
-                <button
-                  type="submit"
-                  disabled={actionLoading || !commentInput.trim()}
-                  className="rounded-full bg-[#3880b0] px-4 py-2 text-sm font-medium text-[#08131d] hover:bg-[#4e93c1] disabled:opacity-70"
-                >
-                  Comment
-                </button>
-              </form>
-
-              {commentLoading ? (
-                <p className="text-sm text-slate-400">Loading comments...</p>
-              ) : comments.length === 0 ? (
-                <p className="text-sm text-slate-400">No comments yet.</p>
-              ) : (
-                <div className="space-y-2">
-                  {comments.map((comment) => (
-                    <article
-                      key={comment.id}
-                      className="rounded-2xl border border-[rgba(127,183,220,0.12)] bg-[rgba(8,19,29,0.76)] p-3"
-                    >
-                      <div className="mb-1 flex items-center justify-between gap-2 text-xs text-slate-400">
-                        <span>{comment.user?.fullName || comment.user?.username || "Unknown User"}</span>
-                        <span>{formatDate(comment.createdAt)}</span>
-                      </div>
-                      <p className="text-sm text-slate-200">{comment.content}</p>
-                    </article>
-                  ))}
+            <section className="space-y-5">
+              <section className="isu-panel rounded-[1.75rem] p-5">
+                <div className="mb-4">
+                  <p className="text-xs uppercase tracking-[0.24em] text-[#7fb7dc]">Discussion</p>
+                  <h2 className="mt-2 text-2xl font-semibold text-white">Comments</h2>
                 </div>
-              )}
+                <form onSubmit={onSubmitComment} className="mb-4 flex flex-col gap-3 sm:flex-row">
+                  <input
+                    value={commentInput}
+                    onChange={(event) => setCommentInput(event.target.value)}
+                    placeholder="Write a comment..."
+                    className="isu-input flex-1 rounded-2xl px-4 py-3 text-sm"
+                  />
+                  <button
+                    type="submit"
+                    disabled={actionLoading || !commentInput.trim()}
+                    className="isu-button-primary rounded-2xl px-5 py-3 text-sm font-semibold disabled:opacity-70 sm:min-w-[140px]"
+                  >
+                    Comment
+                  </button>
+                </form>
+
+                {commentLoading ? (
+                  <p className="text-sm text-slate-400">Loading comments...</p>
+                ) : comments.length === 0 ? (
+                  <p className="text-sm text-slate-400">No comments yet.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {comments.map((comment) => (
+                      <article
+                        key={comment.id}
+                        className="rounded-[1.4rem] border border-[rgba(127,183,220,0.12)] bg-[rgba(8,19,29,0.76)] p-4"
+                      >
+                        <div className="mb-2 flex items-center justify-between gap-2 text-xs text-slate-400">
+                          <span>{comment.user?.fullName || comment.user?.username || "Unknown User"}</span>
+                          <span>{formatDate(comment.createdAt)}</span>
+                        </div>
+                        <p className="text-sm leading-6 text-slate-200">{comment.content}</p>
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </section>
             </section>
           </div>
         )}
@@ -601,7 +638,7 @@ export default function MaterialDetailPage() {
 
       {confirmDelete && material ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 px-4">
-          <div className="w-full max-w-md rounded-2xl border border-[rgba(127,183,220,0.16)] bg-[rgba(16,33,49,0.96)] p-5 shadow-[0_20px_80px_rgba(8,19,29,0.45)] backdrop-blur">
+          <div className="isu-panel w-full max-w-md rounded-[1.75rem] p-5 shadow-[0_20px_80px_rgba(8,19,29,0.45)]">
             <h2 className="text-lg font-semibold">Delete material?</h2>
             <p className="mt-2 text-sm text-slate-400">
               This will remove <span className="text-slate-200">{material.title}</span> from the materials feed.
@@ -609,7 +646,7 @@ export default function MaterialDetailPage() {
             <div className="mt-5 flex justify-end gap-2">
               <button
                 onClick={() => setConfirmDelete(false)}
-                className="rounded-full border border-[rgba(127,183,220,0.2)] px-4 py-2 text-sm hover:bg-[rgba(56,128,176,0.12)]"
+                className="isu-chip rounded-full px-4 py-2 text-sm text-slate-200 hover:bg-[rgba(56,128,176,0.16)]"
               >
                 Cancel
               </button>
