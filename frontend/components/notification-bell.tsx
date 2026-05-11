@@ -154,7 +154,7 @@ export function NotificationBell() {
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="relative rounded-md border border-slate-700 px-3 py-1 text-sm hover:bg-slate-800"
+        className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-[rgba(127,183,220,0.18)] bg-[rgba(7,17,27,0.72)] text-sm transition hover:bg-[rgba(56,128,176,0.14)]"
         aria-label="Notifications"
       >
         <span aria-hidden="true">🔔</span>
@@ -166,7 +166,7 @@ export function NotificationBell() {
       </button>
 
       {open ? (
-        <div className="absolute right-0 z-50 mt-2 w-80 rounded-lg border border-slate-800 bg-slate-900 p-2 shadow-xl">
+        <div className="absolute right-0 z-50 mt-2 w-[min(20rem,calc(100vw-2rem))] rounded-2xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.96)] p-2 shadow-xl backdrop-blur sm:w-80">
           <div className="mb-2 flex items-center justify-between px-2 py-1">
             <p className="text-sm font-medium">Notifications</p>
             <span className="text-xs text-slate-400">{unreadCount} unread</span>
