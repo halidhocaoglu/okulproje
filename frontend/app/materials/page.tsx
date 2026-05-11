@@ -249,44 +249,56 @@ export default function MaterialsPage() {
   return (
     <main className="materials-scene relative min-h-screen overflow-hidden text-slate-100">
       <div className="materials-pattern pointer-events-none absolute inset-0" />
+      <div className="isu-orb left-[-8rem] top-6 h-64 w-64 opacity-65" />
+      <div className="isu-orb bottom-[-10rem] right-[-4rem] h-80 w-80 opacity-55" />
       <div className="relative mx-auto max-w-7xl px-4 py-4">
-        <header className="mb-4 flex items-center justify-between rounded-2xl border border-[rgba(127,183,220,0.16)] bg-[rgba(16,33,49,0.9)] px-4 py-3 shadow-[0_20px_80px_rgba(8,19,29,0.35)] backdrop-blur">
-          <div className="flex items-center gap-3 text-sm">
-            <Link href="/chat" className="rounded-full px-3 py-1.5 hover:bg-[rgba(56,128,176,0.12)]">
+        <header className="isu-panel relative mb-5 overflow-hidden rounded-[1.75rem] px-5 py-4 shadow-[0_20px_80px_rgba(8,19,29,0.35)]">
+          <div className="isu-sheen" />
+          <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-[#7fb7dc]">Knowledge Hub</p>
+              <h1 className="mt-2 text-2xl font-semibold text-white">Materials Workspace</h1>
+              <p className="mt-2 max-w-2xl text-sm text-[var(--isu-text-soft)]">
+                Browse academic uploads, filter by department and course, and publish new material with the same bright campus theme.
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <NotificationBell />
+              <button
+                onClick={logout}
+                className="isu-chip px-3 py-1.5 text-sm text-slate-200 hover:bg-[rgba(56,128,176,0.16)]"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+          <div className="relative mt-5 flex flex-wrap gap-2 text-sm">
+            <Link href="/chat" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
               Chat
             </Link>
             <Link
               href="/materials"
-              className="rounded-full bg-[#3880b0] px-3 py-1.5 font-medium text-[#08131d]"
+              className="isu-button-primary rounded-full px-3 py-1.5 font-medium"
             >
               Materials
             </Link>
-            <Link href="/search" className="rounded-full px-3 py-1.5 hover:bg-[rgba(56,128,176,0.12)]">
+            <Link href="/search" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
               Search
             </Link>
-            <Link href="/departments" className="rounded-full px-3 py-1.5 hover:bg-[rgba(56,128,176,0.12)]">
+            <Link href="/departments" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
               Departments
             </Link>
-            <Link href="/courses" className="rounded-full px-3 py-1.5 hover:bg-[rgba(56,128,176,0.12)]">
+            <Link href="/courses" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
               Courses
             </Link>
           </div>
-          <div className="flex items-center gap-2">
-            <NotificationBell />
-            <button
-              onClick={logout}
-              className="rounded-full border border-[rgba(127,183,220,0.2)] px-3 py-1.5 text-sm hover:bg-[rgba(56,128,176,0.12)]"
-            >
-              Logout
-            </button>
-          </div>
         </header>
 
-        <div className="mb-4 flex flex-wrap gap-2 text-xs text-slate-300">
-          <Link href="/departments" className="rounded-full border border-[rgba(127,183,220,0.18)] px-3 py-1.5 hover:bg-[rgba(56,128,176,0.12)]">
+        <div className="mb-5 flex flex-wrap gap-2 text-xs text-slate-300">
+          <Link href="/departments" className="isu-chip px-3 py-1.5 hover:bg-[rgba(56,128,176,0.16)]">
             Browse departments
           </Link>
-          <Link href="/courses" className="rounded-full border border-[rgba(127,183,220,0.18)] px-3 py-1.5 hover:bg-[rgba(56,128,176,0.12)]">
+          <Link href="/courses" className="isu-chip px-3 py-1.5 hover:bg-[rgba(56,128,176,0.16)]">
             Browse courses
           </Link>
         </div>
@@ -295,9 +307,12 @@ export default function MaterialsPage() {
           <aside className="space-y-4">
             <form
               onSubmit={onApplyFilters}
-              className="rounded-2xl border border-[rgba(127,183,220,0.16)] bg-[rgba(16,33,49,0.88)] p-4 backdrop-blur"
+              className="isu-panel rounded-[1.6rem] p-5"
             >
-              <h2 className="mb-3 text-sm font-semibold">Filters</h2>
+              <h2 className="mb-1 text-sm font-semibold uppercase tracking-[0.24em] text-[#7fb7dc]">Filters</h2>
+              <p className="mb-4 text-sm text-[var(--isu-text-soft)]">
+                Narrow the library with department, course, tags, and ranking emphasis.
+              </p>
               <label className="mb-2 block">
                 <span className="mb-1 block text-xs text-slate-400">Department</span>
                 <select
@@ -306,7 +321,7 @@ export default function MaterialsPage() {
                     setDepartmentFilter(e.target.value);
                     setCourseFilter("");
                   }}
-                  className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
+                  className="isu-input w-full rounded-xl px-3 py-2 text-sm"
                 >
                   <option value="">All departments</option>
                   {departments.map((department) => (
@@ -321,7 +336,7 @@ export default function MaterialsPage() {
                 <select
                   value={courseFilter}
                   onChange={(e) => setCourseFilter(e.target.value)}
-                  className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
+                  className="isu-input w-full rounded-xl px-3 py-2 text-sm"
                 >
                   <option value="">All courses</option>
                   {filteredCourses.map((course) => (
@@ -337,7 +352,7 @@ export default function MaterialsPage() {
                 <input
                   value={tagsFilter}
                   onChange={(e) => setTagsFilter(e.target.value)}
-                  className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
+                  className="isu-input w-full rounded-xl px-3 py-2 text-sm"
                 />
               </label>
               <label className="mb-3 block">
@@ -345,7 +360,7 @@ export default function MaterialsPage() {
                 <select
                   value={sort}
                   onChange={(e) => setSort(e.target.value as "newest" | "most_upvoted")}
-                  className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
+                  className="isu-input w-full rounded-xl px-3 py-2 text-sm"
                 >
                   <option value="newest">Newest</option>
                   <option value="most_upvoted">Most upvoted</option>
@@ -353,7 +368,7 @@ export default function MaterialsPage() {
               </label>
               <button
                 type="submit"
-                className="w-full rounded-xl bg-[#3880b0] px-3 py-2 text-sm font-medium text-[#08131d] hover:bg-[#4e93c1]"
+                className="isu-button-primary w-full rounded-xl px-3 py-2 text-sm font-medium"
               >
                 Apply Filters
               </button>
@@ -361,16 +376,19 @@ export default function MaterialsPage() {
 
             <form
               onSubmit={onCreateMaterial}
-              className="rounded-2xl border border-[rgba(127,183,220,0.16)] bg-[rgba(16,33,49,0.88)] p-4 backdrop-blur"
+              className="isu-panel rounded-[1.6rem] p-5"
             >
-              <h2 className="mb-3 text-sm font-semibold">Create Material</h2>
+              <h2 className="mb-1 text-sm font-semibold uppercase tracking-[0.24em] text-[#7fb7dc]">Create Material</h2>
+              <p className="mb-4 text-sm text-[var(--isu-text-soft)]">
+                Publish notes, decks, labs, or archived PDFs with a cleaner submission flow.
+              </p>
               <label className="mb-2 block">
                 <span className="mb-1 block text-xs text-slate-400">Title</span>
                 <input
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
+                  className="isu-input w-full rounded-xl px-3 py-2 text-sm"
                 />
               </label>
               <label className="mb-2 block">
@@ -379,7 +397,7 @@ export default function MaterialsPage() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={3}
-                  className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
+                  className="isu-input w-full rounded-xl px-3 py-2 text-sm"
                 />
               </label>
               <label className="mb-2 block">
@@ -390,7 +408,7 @@ export default function MaterialsPage() {
                     setDepartmentId(e.target.value);
                     setCourseId("");
                   }}
-                  className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
+                  className="isu-input w-full rounded-xl px-3 py-2 text-sm"
                 >
                   <option value="">No department</option>
                   {departments.map((department) => (
@@ -405,7 +423,7 @@ export default function MaterialsPage() {
                 <select
                   value={courseId}
                   onChange={(e) => setCourseId(e.target.value)}
-                  className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
+                  className="isu-input w-full rounded-xl px-3 py-2 text-sm"
                 >
                   <option value="">No course</option>
                   {createCourses.map((course) => (
@@ -421,7 +439,7 @@ export default function MaterialsPage() {
                 <input
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
-                  className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
+                  className="isu-input w-full rounded-xl px-3 py-2 text-sm"
                 />
               </label>
               <label className="mb-2 block">
@@ -431,7 +449,7 @@ export default function MaterialsPage() {
                 <input
                   value={materialType}
                   onChange={(e) => setMaterialType(e.target.value)}
-                  className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
+                  className="isu-input w-full rounded-xl px-3 py-2 text-sm"
                 />
               </label>
               <label className="mb-2 block">
@@ -440,7 +458,7 @@ export default function MaterialsPage() {
                   value={storageUrl}
                   onChange={(e) => setStorageUrl(e.target.value)}
                   placeholder="https://example.com/dev-placeholder.pdf"
-                  className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
+                  className="isu-input w-full rounded-xl px-3 py-2 text-sm"
                 />
               </label>
               <label className="mb-2 block">
@@ -449,7 +467,7 @@ export default function MaterialsPage() {
                   value={filename}
                   onChange={(e) => setFilename(e.target.value)}
                   placeholder="dev-placeholder.pdf"
-                  className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
+                  className="isu-input w-full rounded-xl px-3 py-2 text-sm"
                 />
               </label>
               <label className="mb-2 block">
@@ -458,7 +476,7 @@ export default function MaterialsPage() {
                   value={fileType}
                   onChange={(e) => setFileType(e.target.value)}
                   placeholder="application/pdf"
-                  className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
+                  className="isu-input w-full rounded-xl px-3 py-2 text-sm"
                 />
               </label>
               <label className="mb-3 block">
@@ -467,21 +485,36 @@ export default function MaterialsPage() {
                   value={fileSize}
                   onChange={(e) => setFileSize(e.target.value)}
                   placeholder="12345"
-                  className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
+                  className="isu-input w-full rounded-xl px-3 py-2 text-sm"
                 />
               </label>
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full rounded-xl bg-[#3880b0] px-3 py-2 text-sm font-medium text-[#08131d] hover:bg-[#4e93c1] disabled:cursor-not-allowed disabled:opacity-70"
+                className="isu-button-primary w-full rounded-xl px-3 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {submitting ? "Creating..." : "Create"}
               </button>
             </form>
           </aside>
 
-          <section className="rounded-2xl border border-[rgba(127,183,220,0.16)] bg-[rgba(16,33,49,0.88)] p-4 shadow-[0_20px_80px_rgba(8,19,29,0.28)] backdrop-blur">
-            <h2 className="mb-3 text-lg font-semibold">Academic Materials</h2>
+          <section className="isu-panel rounded-[1.75rem] p-5 shadow-[0_20px_80px_rgba(8,19,29,0.28)]">
+            <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-semibold text-white">Academic Materials</h2>
+                <p className="mt-1 text-sm text-[var(--isu-text-soft)]">
+                  Curated course files, notes, and archived resources with brighter metadata framing.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <span className="isu-chip px-3 py-1.5 text-xs uppercase tracking-[0.2em] text-slate-200">
+                  {materials.length} visible
+                </span>
+                <span className="isu-chip px-3 py-1.5 text-xs uppercase tracking-[0.2em] text-slate-200">
+                  Sort: {sort === "newest" ? "Newest" : "Most upvoted"}
+                </span>
+              </div>
+            </div>
             {error ? <p className="mb-3 text-sm text-rose-400">{error}</p> : null}
             {success ? <p className="mb-3 text-sm text-emerald-400">{success}</p> : null}
 
@@ -490,32 +523,34 @@ export default function MaterialsPage() {
             ) : materials.length === 0 ? (
               <p className="text-sm text-slate-400">No materials found for the selected filters.</p>
             ) : (
-              <div className="space-y-3">
+              <div className="grid gap-3 xl:grid-cols-2">
                 {materials.map((material) => (
                   <Link
                     key={material.id}
                     href={`/materials/${material.id}`}
-                    className="block rounded-2xl border border-[rgba(127,183,220,0.14)] bg-[rgba(8,19,29,0.76)] p-3 hover:border-[rgba(127,183,220,0.3)]"
+                    className="block rounded-[1.5rem] border border-[rgba(127,183,220,0.16)] bg-[linear-gradient(180deg,rgba(12,28,41,0.96),rgba(8,19,29,0.92))] p-4 shadow-[0_14px_34px_rgba(6,17,27,0.18)] transition hover:border-[rgba(127,183,220,0.34)] hover:shadow-[0_18px_44px_rgba(11,57,84,0.2)]"
                   >
                     <div className="mb-1 flex items-start justify-between gap-2">
-                      <h3 className="text-sm font-semibold">{material.title}</h3>
+                      <h3 className="text-sm font-semibold text-white">{material.title}</h3>
                       <span className="text-xs text-slate-400">{formatDate(material.createdAt)}</span>
                     </div>
                     <p className="line-clamp-2 text-sm text-slate-300">
                       {material.description || "No description"}
                     </p>
-                    <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-400">
-                      <span>Dept: {material.department?.name || "-"}</span>
-                      <span>Course: {material.course?.name || "-"}</span>
-                      <span>Votes: {material.voteCount ?? 0}</span>
-                      <span>{material.isBookmarked ? "Bookmarked" : "Not bookmarked"}</span>
+                    <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-300">
+                      <span className="isu-chip px-2.5 py-1 text-[11px]">Dept: {material.department?.name || "-"}</span>
+                      <span className="isu-chip px-2.5 py-1 text-[11px]">Course: {material.course?.name || "-"}</span>
+                      <span className="isu-chip px-2.5 py-1 text-[11px]">Votes: {material.voteCount ?? 0}</span>
+                      <span className="isu-chip px-2.5 py-1 text-[11px]">
+                        {material.isBookmarked ? "Bookmarked" : "Not bookmarked"}
+                      </span>
                     </div>
                     {material.tags?.length ? (
-                      <div className="mt-2 flex flex-wrap gap-1">
+                      <div className="mt-3 flex flex-wrap gap-1.5">
                         {material.tags.map((tag, index) => (
                           <span
                             key={`${material.id}-tag-${tag.name}-${index}`}
-                            className="rounded-full bg-[rgba(56,128,176,0.14)] px-2 py-0.5 text-[11px] text-[#b4d8ee]"
+                            className="rounded-full bg-[rgba(56,128,176,0.18)] px-2.5 py-1 text-[11px] text-[#d3ecfb]"
                           >
                             {tag.name}
                           </span>
@@ -525,12 +560,12 @@ export default function MaterialsPage() {
                   </Link>
                 ))}
                 {nextCursor ? (
-                  <div className="flex justify-center pt-2">
+                  <div className="col-span-full flex justify-center pt-2">
                     <button
                       type="button"
                       onClick={() => void loadMoreMaterials()}
                       disabled={loadingMore}
-                      className="rounded-xl border border-[rgba(127,183,220,0.16)] px-4 py-2 text-sm text-slate-300 hover:bg-[rgba(56,128,176,0.12)] disabled:opacity-60"
+                      className="isu-chip px-4 py-2 text-sm text-slate-200 hover:bg-[rgba(56,128,176,0.16)] disabled:opacity-60"
                     >
                       {loadingMore ? "Loading..." : "More materials"}
                     </button>

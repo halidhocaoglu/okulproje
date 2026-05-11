@@ -659,80 +659,86 @@ export default function ChatPage() {
   return (
     <main className="chat-scene relative min-h-screen overflow-x-hidden text-slate-100 md:h-screen md:overflow-hidden">
       <div className="chat-pattern pointer-events-none absolute inset-0" />
+      <div className="isu-orb left-[-10rem] top-8 h-72 w-72 opacity-70" />
+      <div className="isu-orb bottom-[-8rem] right-[-6rem] h-80 w-80 opacity-60" />
       <div className="relative mx-auto grid min-h-screen max-w-7xl grid-cols-1 gap-0 md:h-full md:min-h-0 md:grid-cols-[340px_1fr] md:p-4">
-        <aside className="flex min-h-0 flex-col border-b border-[rgba(127,183,220,0.16)] bg-[rgba(16,33,49,0.94)] md:rounded-l-3xl md:border md:border-r-0">
-          <div className="border-b border-[rgba(127,183,220,0.16)] px-4 py-4">
+        <aside className="isu-panel relative flex min-h-0 flex-col overflow-hidden border-b md:rounded-l-[2rem] md:border-r-0">
+          <div className="isu-sheen" />
+          <div className="border-b border-[rgba(127,183,220,0.16)] px-5 py-5">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-[#7fb7dc]">IsuChat</p>
                 <h1 className="mt-1 text-xl font-semibold text-white">Conversations</h1>
+                <p className="mt-2 max-w-xs text-sm text-[var(--isu-text-soft)]">
+                  Private threads, department rooms, and group channels in one live workspace.
+                </p>
               </div>
               <div className="flex items-center gap-2">
                 <NotificationBell />
                 <button
                   onClick={logout}
-                  className="rounded-full border border-[rgba(127,183,220,0.2)] px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-[rgba(127,183,220,0.38)] hover:bg-[rgba(56,128,176,0.12)]"
+                  className="isu-chip px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-[rgba(127,183,220,0.38)] hover:bg-[rgba(56,128,176,0.2)]"
                 >
                   Logout
                 </button>
               </div>
             </div>
-            <div className="mt-4 flex flex-wrap gap-2 text-sm">
-              <Link href="/chat" className="rounded-full bg-[#3880b0] px-3 py-1.5 font-medium text-[#08131d]">
+            <div className="mt-5 flex flex-wrap gap-2 text-sm">
+              <Link href="/chat" className="isu-button-primary rounded-full px-3 py-1.5 text-sm font-medium">
                 Chat
               </Link>
               <Link
                 href="/materials"
-                className="rounded-full border border-[rgba(127,183,220,0.2)] px-3 py-1.5 text-slate-300 transition hover:bg-[rgba(56,128,176,0.12)]"
+                className="isu-chip px-3 py-1.5 text-slate-200 transition hover:bg-[rgba(56,128,176,0.16)]"
               >
                 Materials
               </Link>
               <Link
                 href="/search"
-                className="rounded-full border border-[rgba(127,183,220,0.2)] px-3 py-1.5 text-slate-300 transition hover:bg-[rgba(56,128,176,0.12)]"
+                className="isu-chip px-3 py-1.5 text-slate-200 transition hover:bg-[rgba(56,128,176,0.16)]"
               >
                 Search
               </Link>
               <Link
                 href="/groups"
-                className="rounded-full border border-[rgba(127,183,220,0.2)] px-3 py-1.5 text-slate-300 transition hover:bg-[rgba(56,128,176,0.12)]"
+                className="isu-chip px-3 py-1.5 text-slate-200 transition hover:bg-[rgba(56,128,176,0.16)]"
               >
                 Groups
               </Link>
               <Link
                 href="/departments"
-                className="rounded-full border border-[rgba(127,183,220,0.2)] px-3 py-1.5 text-slate-300 transition hover:bg-[rgba(56,128,176,0.12)]"
+                className="isu-chip px-3 py-1.5 text-slate-200 transition hover:bg-[rgba(56,128,176,0.16)]"
               >
                 Departments
               </Link>
               <Link
                 href="/courses"
-                className="rounded-full border border-[rgba(127,183,220,0.2)] px-3 py-1.5 text-slate-300 transition hover:bg-[rgba(56,128,176,0.12)]"
+                className="isu-chip px-3 py-1.5 text-slate-200 transition hover:bg-[rgba(56,128,176,0.16)]"
               >
                 Courses
               </Link>
               <Link
                 href="/settings"
-                className="rounded-full border border-[rgba(127,183,220,0.2)] px-3 py-1.5 text-slate-300 transition hover:bg-[rgba(56,128,176,0.12)]"
+                className="isu-chip px-3 py-1.5 text-slate-200 transition hover:bg-[rgba(56,128,176,0.16)]"
               >
                 Settings
               </Link>
               <Link
                 href="/admin"
-                className="rounded-full border border-[rgba(127,183,220,0.2)] px-3 py-1.5 text-slate-300 transition hover:bg-[rgba(56,128,176,0.12)]"
+                className="isu-chip px-3 py-1.5 text-slate-200 transition hover:bg-[rgba(56,128,176,0.16)]"
               >
                 Admin
               </Link>
             </div>
           </div>
 
-          <div className="max-h-[50vh] min-h-0 flex-1 overflow-y-auto p-3 md:max-h-none">
+          <div className="max-h-[50vh] min-h-0 flex-1 overflow-y-auto p-4 md:max-h-none">
             {roomsLoading ? (
               <div className="space-y-3">
                 {Array.from({ length: 5 }).map((_, index) => (
                   <div
                     key={`room-skeleton-${index}`}
-                    className="animate-pulse rounded-2xl border border-[rgba(127,183,220,0.12)] bg-[rgba(8,19,29,0.76)] p-4"
+                    className="animate-pulse rounded-[1.5rem] border border-[rgba(127,183,220,0.12)] bg-[rgba(8,19,29,0.76)] p-4"
                   >
                     <div className="h-4 w-2/3 rounded bg-slate-800" />
                     <div className="mt-3 h-3 w-full rounded bg-slate-800" />
@@ -740,7 +746,7 @@ export default function ChatPage() {
                 ))}
               </div>
             ) : rooms.length === 0 ? (
-              <div className="flex h-full min-h-[240px] items-center justify-center rounded-3xl border border-dashed border-[rgba(127,183,220,0.18)] bg-[rgba(8,19,29,0.52)] px-6 text-center">
+              <div className="flex h-full min-h-[240px] items-center justify-center rounded-[1.75rem] border border-dashed border-[rgba(127,183,220,0.18)] bg-[rgba(8,19,29,0.52)] px-6 text-center">
                 <div>
                   <p className="text-sm font-medium text-slate-200">No rooms available yet</p>
                   <p className="mt-2 text-sm text-slate-400">
@@ -762,15 +768,15 @@ export default function ChatPage() {
                       onClick={() => setSelectedRoomId(room.id)}
                       className={`w-full rounded-2xl border px-4 py-3 text-left transition ${
                         isActive
-                          ? "border-[rgba(127,183,220,0.4)] bg-[rgba(56,128,176,0.14)] shadow-[0_0_0_1px_rgba(56,128,176,0.16)]"
-                          : "border-[rgba(127,183,220,0.12)] bg-[rgba(8,19,29,0.52)] hover:border-[rgba(127,183,220,0.24)] hover:bg-[rgba(8,19,29,0.76)]"
+                          ? "border-[rgba(127,183,220,0.46)] bg-[linear-gradient(135deg,rgba(56,128,176,0.24),rgba(7,21,33,0.9))] shadow-[0_0_0_1px_rgba(56,128,176,0.2),0_18px_35px_rgba(4,14,23,0.22)]"
+                          : "border-[rgba(127,183,220,0.12)] bg-[rgba(8,19,29,0.52)] hover:border-[rgba(127,183,220,0.24)] hover:bg-[rgba(10,24,37,0.88)]"
                       }`}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
                             <p className="truncate text-sm font-semibold text-slate-100">{roomName}</p>
-                            <span className="rounded-full border border-[rgba(127,183,220,0.18)] px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-slate-400">
+                            <span className="isu-chip px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-slate-300">
                               {roomTypeLabel}
                             </span>
                           </div>
@@ -795,8 +801,8 @@ export default function ChatPage() {
           </div>
         </aside>
 
-        <section className="flex min-h-[55vh] flex-col bg-[rgba(8,19,29,0.82)] md:h-full md:min-h-0 md:rounded-r-3xl md:border md:border-[rgba(127,183,220,0.16)]">
-          <header className="border-b border-[rgba(127,183,220,0.16)] bg-[rgba(16,33,49,0.72)] px-4 py-4 backdrop-blur">
+        <section className="isu-panel flex min-h-[55vh] flex-col overflow-hidden bg-[rgba(8,19,29,0.82)] md:h-full md:min-h-0 md:rounded-r-[2rem] md:border">
+          <header className="border-b border-[rgba(127,183,220,0.16)] bg-[linear-gradient(180deg,rgba(16,33,49,0.82),rgba(16,33,49,0.55))] px-5 py-5 backdrop-blur">
             {selectedRoom ? (
               <div className="flex items-center justify-between gap-4">
                 <div className="min-w-0">
@@ -804,7 +810,7 @@ export default function ChatPage() {
                     <h2 className="truncate text-lg font-semibold text-white">
                       {getRoomTitle(selectedRoom)}
                     </h2>
-                    <span className="rounded-full border border-[rgba(127,183,220,0.18)] px-2.5 py-1 text-[11px] uppercase tracking-[0.18em] text-slate-400">
+                    <span className="isu-chip px-2.5 py-1 text-[11px] uppercase tracking-[0.18em] text-slate-300">
                       {getRoomTypeLabel(selectedRoom.roomType)}
                     </span>
                   </div>
@@ -831,7 +837,7 @@ export default function ChatPage() {
 
           <div
             ref={messagesViewportRef}
-            className="min-h-0 flex-1 overflow-y-auto bg-[radial-gradient(circle_at_top,_rgba(56,128,176,0.12),_transparent_32%),linear-gradient(180deg,_rgba(15,29,43,0.92),_rgba(8,19,29,1))] px-4 py-5"
+            className="min-h-0 flex-1 overflow-y-auto bg-[radial-gradient(circle_at_top,_rgba(56,128,176,0.14),_transparent_32%),linear-gradient(180deg,_rgba(15,29,43,0.92),_rgba(8,19,29,1))] px-5 py-5"
           >
             {messagesLoading ? (
               <div className="space-y-4">
@@ -873,7 +879,7 @@ export default function ChatPage() {
                       type="button"
                       onClick={() => void loadOlderMessages()}
                       disabled={loadingOlderMessages}
-                      className="rounded-full border border-[rgba(127,183,220,0.18)] px-4 py-2 text-xs text-slate-300 hover:bg-[rgba(56,128,176,0.12)] disabled:opacity-60"
+                      className="isu-chip px-4 py-2 text-xs text-slate-200 hover:bg-[rgba(56,128,176,0.16)] disabled:opacity-60"
                     >
                       {loadingOlderMessages ? "Loading..." : "Load older messages"}
                     </button>
@@ -909,8 +915,8 @@ export default function ChatPage() {
                         <div
                           className={`rounded-[1.6rem] px-4 py-3 shadow-lg ${
                             message.isSelf
-                              ? "rounded-br-md bg-[#3880b0] text-[#08131d]"
-                              : "rounded-bl-md border border-[rgba(127,183,220,0.14)] bg-[rgba(16,33,49,0.96)] text-slate-100"
+                              ? "rounded-br-md bg-[linear-gradient(135deg,#52a0d1,#3880b0)] text-[#08131d] shadow-[0_20px_40px_rgba(17,79,116,0.28)]"
+                              : "rounded-bl-md border border-[rgba(127,183,220,0.14)] bg-[rgba(16,33,49,0.96)] text-slate-100 shadow-[0_18px_40px_rgba(4,14,23,0.2)]"
                           }`}
                         >
                           <p className="text-sm leading-6">
@@ -950,7 +956,7 @@ export default function ChatPage() {
 
           <form
             onSubmit={onSendMessage}
-            className="border-t border-[rgba(127,183,220,0.16)] bg-[rgba(16,33,49,0.86)] px-4 py-3 backdrop-blur"
+            className="border-t border-[rgba(127,183,220,0.16)] bg-[linear-gradient(180deg,rgba(16,33,49,0.84),rgba(10,23,35,0.96))] px-5 py-4 backdrop-blur"
           >
             <div className="mb-2 min-h-5">
               {typingLabel ? (
@@ -971,12 +977,12 @@ export default function ChatPage() {
                 onChange={(e) => onInputChange(e.target.value)}
                 placeholder={selectedRoom ? "Type a message..." : "Choose a room first"}
                 disabled={!selectedRoomId}
-                className="flex-1 rounded-2xl border border-[rgba(127,183,220,0.18)] bg-[rgba(8,19,29,0.88)] px-4 py-3 text-sm text-slate-100 outline-none ring-[#3880b0] transition placeholder:text-slate-500 focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60"
+                className="isu-input flex-1 rounded-2xl px-4 py-3 text-sm disabled:cursor-not-allowed disabled:opacity-60"
               />
               <button
                 type="submit"
                 disabled={sending || !selectedRoomId || !messageInput.trim()}
-                className="rounded-2xl bg-[#3880b0] px-5 py-3 text-sm font-semibold text-[#08131d] transition hover:bg-[#4e93c1] disabled:cursor-not-allowed disabled:opacity-60"
+                className="isu-button-primary rounded-2xl px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {sending ? "Sending..." : "Send"}
               </button>
@@ -989,7 +995,7 @@ export default function ChatPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 px-4">
           <form
             onSubmit={onSubmitMessageReport}
-            className="w-full max-w-md rounded-2xl border border-[rgba(127,183,220,0.16)] bg-[rgba(16,33,49,0.96)] p-5 shadow-[0_20px_80px_rgba(8,19,29,0.45)] backdrop-blur"
+            className="isu-panel w-full max-w-md rounded-[1.75rem] p-5 shadow-[0_20px_80px_rgba(8,19,29,0.45)]"
           >
             <h2 className="text-lg font-semibold text-white">Report message</h2>
             <p className="mt-2 text-sm text-slate-400">
@@ -1011,7 +1017,7 @@ export default function ChatPage() {
                       | "other"
                   )
                 }
-                className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
+                className="isu-input w-full rounded-xl px-3 py-2 text-sm"
               >
                 <option value="inappropriate_content">Inappropriate content</option>
                 <option value="spam">Spam</option>
@@ -1029,7 +1035,7 @@ export default function ChatPage() {
                 onChange={(event) => setMessageReportDescription(event.target.value)}
                 rows={4}
                 placeholder="Optional context for moderators"
-                className="w-full rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-3 py-2 text-sm outline-none ring-[#3880b0] focus:ring-2"
+                className="isu-input w-full rounded-xl px-3 py-2 text-sm"
               />
             </label>
             <div className="mt-5 flex justify-end gap-2">
@@ -1041,7 +1047,7 @@ export default function ChatPage() {
                   setMessageReportDescription("");
                   setMessageReportReason("inappropriate_content");
                 }}
-                className="rounded-full border border-[rgba(127,183,220,0.2)] px-4 py-2 text-sm hover:bg-[rgba(56,128,176,0.12)]"
+                className="isu-chip px-4 py-2 text-sm hover:bg-[rgba(56,128,176,0.16)]"
               >
                 Cancel
               </button>
