@@ -58,35 +58,44 @@ export default function CoursesPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 px-4 py-4 text-slate-100">
-      <div className="mx-auto max-w-6xl">
-        <header className="mb-4 flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900 px-4 py-3">
-          <div className="flex items-center gap-3 text-sm">
-            <Link href="/chat" className="rounded-md px-2 py-1 hover:bg-slate-800">Chat</Link>
-            <Link href="/materials" className="rounded-md px-2 py-1 hover:bg-slate-800">Materials</Link>
-            <Link href="/search" className="rounded-md px-2 py-1 hover:bg-slate-800">Search</Link>
-            <Link href="/departments" className="rounded-md px-2 py-1 hover:bg-slate-800">Departments</Link>
-            <Link href="/courses" className="rounded-md bg-slate-800 px-2 py-1 text-cyan-300">Courses</Link>
+    <main className="relative min-h-screen overflow-hidden bg-slate-950 px-4 py-4 text-slate-100">
+      <div className="isu-orb left-[-8rem] top-10 h-64 w-64 opacity-60" />
+      <div className="isu-orb bottom-[-9rem] right-[-6rem] h-80 w-80 opacity-55" />
+      <div className="relative mx-auto max-w-6xl">
+        <header className="isu-panel relative mb-5 overflow-hidden rounded-[1.75rem] px-5 py-4">
+          <div className="isu-sheen" />
+          <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-[#7fb7dc]">Academic Catalog</p>
+              <h1 className="mt-2 text-2xl font-semibold text-white">Courses</h1>
+            </div>
+            <div className="flex items-center gap-2">
+              <NotificationBell />
+              <button onClick={logout} className="isu-chip px-3 py-1.5 text-sm text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
+                Logout
+              </button>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <NotificationBell />
-            <button onClick={logout} className="rounded-md border border-slate-700 px-3 py-1 text-sm hover:bg-slate-800">
-              Logout
-            </button>
+          <div className="relative mt-5 flex flex-wrap gap-2 text-sm">
+            <Link href="/chat" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Chat</Link>
+            <Link href="/materials" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Materials</Link>
+            <Link href="/search" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Search</Link>
+            <Link href="/departments" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Departments</Link>
+            <Link href="/courses" className="isu-button-primary rounded-full px-3 py-1.5 font-medium">Courses</Link>
           </div>
         </header>
 
-        <section className="rounded-xl border border-slate-800 bg-slate-900 p-4">
+        <section className="isu-panel rounded-[1.75rem] p-5">
           <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h1 className="text-xl font-semibold">Courses</h1>
-              <p className="mt-1 text-sm text-slate-400">Browse available academic courses and jump into related material collections.</p>
+              <p className="mt-1 text-sm text-[var(--isu-text-soft)]">Find active course entries and jump straight into their material streams.</p>
             </div>
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search courses..."
-              className="w-full max-w-xs rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none ring-cyan-400 focus:ring-2"
+              className="isu-input w-full max-w-xs rounded-xl px-3 py-2 text-sm"
             />
           </div>
 
@@ -102,14 +111,14 @@ export default function CoursesPage() {
                   <Link
                     key={course.id}
                     href={`/courses/${course.id}`}
-                    className="rounded-xl border border-slate-800 bg-slate-950 p-4 hover:border-slate-700"
+                    className="rounded-[1.5rem] border border-[rgba(127,183,220,0.16)] bg-[linear-gradient(180deg,rgba(12,28,41,0.96),rgba(8,19,29,0.92))] p-4 transition hover:border-[rgba(127,183,220,0.34)]"
                   >
-                    <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{course.code || "Course"}</p>
+                    <p className="text-xs uppercase tracking-[0.2em] text-[#7fb7dc]">{course.code || "Course"}</p>
                     <h2 className="mt-2 font-semibold">{course.name}</h2>
                     <p className="mt-2 text-sm text-slate-400">{course.description || "No description available."}</p>
-                    <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-500">
-                      <span>{course.department?.name || "No department"}</span>
-                      <span>Materials: {course.materialCount ?? 0}</span>
+                    <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-300">
+                      <span className="isu-chip px-2.5 py-1 text-[11px]">{course.department?.name || "No department"}</span>
+                      <span className="isu-chip px-2.5 py-1 text-[11px]">Materials: {course.materialCount ?? 0}</span>
                     </div>
                   </Link>
                 ))}

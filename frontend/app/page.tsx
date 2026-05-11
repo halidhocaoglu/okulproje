@@ -176,27 +176,26 @@ export default function LoginPage() {
               IsuChat Platform
             </span>
             <h1 className="mt-6 text-5xl font-semibold leading-[1.02] tracking-[-0.04em] text-white">
-              Üniversite iletişimini
+              Bring university communication
               <span className="block bg-[linear-gradient(135deg,#bce8ff_0%,#54a4da_32%,#3880b0_64%,#7fb7dc_100%)] bg-clip-text text-transparent">
-                daha canlı bir akışa taşı.
+                into a more vivid flow.
               </span>
             </h1>
             <p className="mt-6 max-w-lg text-base leading-7 text-[color:var(--isu-text-soft)]">
-              Sohbet, materyal paylaşımı, departman akışı ve sosyal bağlantılar tek bir arayüzde birleşiyor.
-              Canlı renkler, hızlı geçişler ve net bir odak ile kampüs içi kullanım için tasarlanmış bir deneyim.
+              Chat, materials, department activity, and campus connections come together in one focused interface.
             </p>
             <div className="mt-8 grid gap-4 sm:grid-cols-3">
               <div className="isu-panel isu-sheen rounded-3xl p-4">
                 <p className="text-[11px] uppercase tracking-[0.22em] text-[#7fb7dc]">Realtime</p>
-                <p className="mt-3 text-sm text-slate-200">Canlı sohbet, bildirim ve durum güncellemeleri.</p>
+                <p className="mt-3 text-sm text-slate-200">Live chat, alerts, and presence updates.</p>
               </div>
               <div className="isu-panel isu-sheen rounded-3xl p-4">
                 <p className="text-[11px] uppercase tracking-[0.22em] text-[#7fb7dc]">Academic</p>
-                <p className="mt-3 text-sm text-slate-200">Materyal, ders ve bölüm odaklı tek akış.</p>
+                <p className="mt-3 text-sm text-slate-200">Materials, courses, and department-focused discovery.</p>
               </div>
               <div className="isu-panel isu-sheen rounded-3xl p-4">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-[#7fb7dc]">Secure</p>
-                <p className="mt-3 text-sm text-slate-200">Kurumsal hesap modeli ve rol tabanlı alanlar.</p>
+                <p className="text-[11px] uppercase tracking-[0.22em] text-[#7fb7dc]">Connected</p>
+                <p className="mt-3 text-sm text-slate-200">A cleaner network for campus-wide collaboration.</p>
               </div>
             </div>
           </div>
@@ -215,8 +214,8 @@ export default function LoginPage() {
               </h1>
               <p className="mt-2 max-w-sm text-sm leading-6 text-[color:var(--isu-text-soft)]">
                 {mode === "login"
-                  ? "Kampüs içi iletişim, materyal paylaşımı ve canlı mesajlaşma için oturum aç."
-                  : "Kurumsal e-posta yapınla yeni hesabını oluştur ve ağın içine katıl."}
+                  ? "Sign in to continue to your campus network."
+                  : "Create your account with your institutional email."}
               </p>
             </div>
             <div className="flex rounded-full border border-[rgba(127,183,220,0.24)] bg-[rgba(4,12,20,0.72)] p-1 text-sm shadow-[inset_0_0_0_1px_rgba(56,128,176,0.08)]">
@@ -255,14 +254,14 @@ export default function LoginPage() {
 
           <div className="mb-6 flex items-center gap-3 rounded-2xl border border-[rgba(127,183,220,0.12)] bg-[rgba(7,17,27,0.72)] px-4 py-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#54a4da,#3880b0)] text-lg font-semibold text-[#07131d] shadow-[0_12px_28px_rgba(56,128,176,0.28)]">
-              İ
+              I
             </div>
             <div className="min-w-0">
               <p className="text-sm font-medium text-slate-100">Institutional Access</p>
               <p className="text-xs text-[color:var(--isu-text-soft)]">
                 {mode === "login"
-                  ? "Hesabına eriş ve kampüs ağına bağlan."
-                  : "Bölümünü seç, kurumsal hesabını oluştur."}
+                  ? "Access your account."
+                  : "Choose your department and continue."}
               </p>
             </div>
           </div>
@@ -377,10 +376,6 @@ export default function LoginPage() {
                 ? "Login"
                 : "Register"}
           </button>
-          <div className="mt-4 flex items-center justify-between gap-4 text-xs text-[color:var(--isu-text-soft)]">
-            <span>Primary palette: #3880b0</span>
-            <span>{mode === "login" ? "Secure session access" : "Institutional account setup"}</span>
-          </div>
         </form>
         </div>
       </div>

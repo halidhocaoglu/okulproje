@@ -247,46 +247,55 @@ export default function SearchPage() {
   return (
     <main className="search-scene relative min-h-screen overflow-x-hidden text-slate-100">
       <div className="search-pattern pointer-events-none absolute inset-0" />
+      <div className="isu-orb left-[-8rem] top-10 h-64 w-64 opacity-65" />
+      <div className="isu-orb bottom-[-9rem] right-[-4rem] h-80 w-80 opacity-55" />
       <div className="relative mx-auto max-w-6xl px-4 py-4">
-        <header className="mb-4 flex items-center justify-between rounded-2xl border border-[rgba(127,183,220,0.16)] bg-[rgba(16,33,49,0.9)] px-4 py-3 shadow-[0_20px_80px_rgba(8,19,29,0.35)] backdrop-blur">
-          <div className="flex items-center gap-3 text-sm">
-            <Link href="/chat" className="rounded-full px-3 py-1.5 hover:bg-[rgba(56,128,176,0.12)]">
+        <header className="isu-panel relative mb-5 overflow-hidden rounded-[1.75rem] px-5 py-4 shadow-[0_20px_80px_rgba(8,19,29,0.35)]">
+          <div className="isu-sheen" />
+          <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-[#7fb7dc]">Discovery</p>
+              <h1 className="mt-2 text-2xl font-semibold text-white">Search the network</h1>
+            </div>
+            <div className="flex items-center gap-2">
+              <NotificationBell />
+              <button
+                onClick={logout}
+                className="isu-chip px-3 py-1.5 text-sm text-slate-200 hover:bg-[rgba(56,128,176,0.16)]"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+          <div className="relative mt-5 flex flex-wrap gap-2 text-sm">
+            <Link href="/chat" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
               Chat
             </Link>
-            <Link href="/materials" className="rounded-full px-3 py-1.5 hover:bg-[rgba(56,128,176,0.12)]">
+            <Link href="/materials" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
               Materials
             </Link>
-            <Link href="/search" className="rounded-full bg-[#3880b0] px-3 py-1.5 font-medium text-[#08131d]">
+            <Link href="/search" className="isu-button-primary rounded-full px-3 py-1.5 font-medium">
               Search
             </Link>
-            <Link href="/groups" className="rounded-full px-3 py-1.5 hover:bg-[rgba(56,128,176,0.12)]">
+            <Link href="/groups" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
               Groups
             </Link>
           </div>
-          <div className="flex items-center gap-2">
-            <NotificationBell />
-            <button
-              onClick={logout}
-              className="rounded-full border border-[rgba(127,183,220,0.2)] px-3 py-1.5 text-sm hover:bg-[rgba(56,128,176,0.12)]"
-            >
-              Logout
-            </button>
-          </div>
         </header>
 
-        <section className="rounded-2xl border border-[rgba(127,183,220,0.16)] bg-[rgba(16,33,49,0.88)] p-4 shadow-[0_20px_80px_rgba(8,19,29,0.28)] backdrop-blur">
+        <section className="isu-panel rounded-[1.75rem] p-5 shadow-[0_20px_80px_rgba(8,19,29,0.28)]">
           <form onSubmit={onSearch} className="mb-4 flex flex-col gap-3">
             <div className="flex gap-2">
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search materials, users, groups..."
-                className="flex-1 rounded-2xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.82)] px-4 py-3 text-sm outline-none ring-[#3880b0] focus:ring-2"
+                className="isu-input flex-1 rounded-2xl px-4 py-3 text-sm"
               />
               <button
                 type="submit"
                 disabled={loading}
-                className="rounded-2xl bg-[#3880b0] px-5 py-3 text-sm font-medium text-[#08131d] hover:bg-[#4e93c1] disabled:opacity-70"
+                className="isu-button-primary rounded-2xl px-5 py-3 text-sm font-medium disabled:opacity-70"
               >
                 {loading ? "Searching..." : "Search"}
               </button>
@@ -297,10 +306,10 @@ export default function SearchPage() {
                   key={tab.key}
                   type="button"
                   onClick={() => setActiveTab(tab.key)}
-                  className={`rounded-full px-3 py-1.5 text-xs ${
+                  className={`rounded-full px-3 py-1.5 text-xs transition ${
                     activeTab === tab.key
-                      ? "bg-[#3880b0] font-semibold text-[#08131d]"
-                      : "border border-[rgba(127,183,220,0.18)] text-slate-300 hover:bg-[rgba(56,128,176,0.12)]"
+                      ? "isu-button-primary font-semibold"
+                      : "isu-chip text-slate-200 hover:bg-[rgba(56,128,176,0.16)]"
                   }`}
                 >
                   {tab.label}
@@ -347,7 +356,7 @@ export default function SearchPage() {
                 const content = (
                   <>
                     <div className="mb-2 flex items-center justify-between gap-2">
-                      <span className="rounded bg-slate-800 px-2 py-0.5 text-[11px] uppercase text-cyan-300">
+                      <span className="isu-chip px-2 py-0.5 text-[11px] uppercase text-slate-200">
                         {result.entityType}
                       </span>
                       {result.createdAt ? (
@@ -369,7 +378,7 @@ export default function SearchPage() {
                     <Link
                       key={`${result.entityType}-${result.entityId}`}
                       href={materialHref ?? userHref ?? groupHref ?? "#"}
-                      className="block rounded-2xl border border-[rgba(127,183,220,0.14)] bg-[rgba(8,19,29,0.76)] p-4 hover:border-[rgba(127,183,220,0.3)]"
+                      className="block rounded-[1.5rem] border border-[rgba(127,183,220,0.16)] bg-[linear-gradient(180deg,rgba(12,28,41,0.96),rgba(8,19,29,0.92))] p-4 transition hover:border-[rgba(127,183,220,0.34)]"
                     >
                       {content}
                     </Link>
@@ -379,7 +388,7 @@ export default function SearchPage() {
                 return (
                   <div
                     key={`${result.entityType}-${result.entityId}`}
-                    className="rounded-2xl border border-[rgba(127,183,220,0.14)] bg-[rgba(8,19,29,0.76)] p-4"
+                    className="rounded-[1.5rem] border border-[rgba(127,183,220,0.16)] bg-[linear-gradient(180deg,rgba(12,28,41,0.96),rgba(8,19,29,0.92))] p-4"
                   >
                     {content}
                   </div>
@@ -390,7 +399,7 @@ export default function SearchPage() {
                   <button
                     type="button"
                     onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
-                    className="rounded-full border border-[rgba(127,183,220,0.18)] px-4 py-2 text-sm text-slate-300 hover:bg-[rgba(56,128,176,0.12)]"
+                    className="isu-chip px-4 py-2 text-sm text-slate-200 hover:bg-[rgba(56,128,176,0.16)]"
                   >
                     More results
                   </button>

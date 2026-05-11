@@ -96,44 +96,53 @@ export default function SettingsPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-slate-950 px-4 py-4 text-slate-100">
-      <div className="mx-auto max-w-4xl">
-        <header className="mb-4 flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900 px-4 py-3">
-          <div className="flex items-center gap-3 text-sm">
-            <Link href="/chat" className="rounded-md px-2 py-1 hover:bg-slate-800">
+    <main className="relative min-h-screen overflow-hidden bg-slate-950 px-4 py-4 text-slate-100">
+      <div className="isu-orb left-[-7rem] top-10 h-64 w-64 opacity-60" />
+      <div className="isu-orb bottom-[-9rem] right-[-6rem] h-80 w-80 opacity-55" />
+      <div className="relative mx-auto max-w-4xl">
+        <header className="isu-panel relative mb-5 overflow-hidden rounded-[1.75rem] px-5 py-4">
+          <div className="isu-sheen" />
+          <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-[#7fb7dc]">Preferences</p>
+              <h1 className="mt-2 text-2xl font-semibold text-white">Settings</h1>
+            </div>
+            <div className="flex items-center gap-2">
+              <NotificationBell />
+              <button
+                onClick={logout}
+                className="isu-chip px-3 py-1.5 text-sm text-slate-200 hover:bg-[rgba(56,128,176,0.16)]"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+          <div className="relative mt-5 flex flex-wrap gap-2 text-sm">
+            <Link href="/chat" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
               Chat
             </Link>
-            <Link href="/settings" className="rounded-md bg-slate-800 px-2 py-1 text-cyan-300">
+            <Link href="/settings" className="isu-button-primary rounded-full px-3 py-1.5 font-medium">
               Settings
             </Link>
-            <Link href="/settings/profile" className="rounded-md px-2 py-1 hover:bg-slate-800">
+            <Link href="/settings/profile" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
               Profile
             </Link>
-            <Link href="/friends" className="rounded-md px-2 py-1 hover:bg-slate-800">
+            <Link href="/friends" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
               Friends
             </Link>
-            <Link href="/departments" className="rounded-md px-2 py-1 hover:bg-slate-800">
+            <Link href="/departments" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
               Departments
             </Link>
-            <Link href="/courses" className="rounded-md px-2 py-1 hover:bg-slate-800">
+            <Link href="/courses" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
               Courses
             </Link>
-            <Link href="/admin" className="rounded-md px-2 py-1 hover:bg-slate-800">
+            <Link href="/admin" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
               Admin
             </Link>
           </div>
-          <div className="flex items-center gap-2">
-            <NotificationBell />
-            <button
-              onClick={logout}
-              className="rounded-md border border-slate-700 px-3 py-1 text-sm hover:bg-slate-800"
-            >
-              Logout
-            </button>
-          </div>
         </header>
 
-        <section className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+        <section className="isu-panel rounded-[1.75rem] p-5">
           <div className="mb-5">
             <h1 className="text-xl font-semibold">Notification Settings</h1>
             <p className="mt-2 text-sm text-slate-400">
@@ -150,7 +159,7 @@ export default function SettingsPage() {
               {cards.map((card) => (
                 <div
                   key={card.key}
-                  className="flex items-center justify-between gap-3 rounded-lg border border-slate-800 bg-slate-950 p-4"
+                  className="flex items-center justify-between gap-3 rounded-[1.4rem] border border-[rgba(127,183,220,0.16)] bg-[linear-gradient(180deg,rgba(12,28,41,0.96),rgba(8,19,29,0.92))] p-4"
                 >
                   <div>
                     <h2 className="font-medium">{card.title}</h2>
