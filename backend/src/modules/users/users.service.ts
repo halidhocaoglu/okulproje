@@ -98,6 +98,16 @@ export class UsersService {
     dto: AdminUpdateUserDto,
   ) {
     this.assertAdmin(actor);
+    if (actor.id === userId) {
+      if (dto.isActive === false) {
+        throw new ForbiddenException('You cannot ban your own account');
+      }
+
+      if (dto.role && !['school_admin', 'moderator'].includes(dto.role)) {
+        throw new ForbiddenException('You cannot remove your own admin access');
+      }
+    }
+
     const profile = await this.usersRepository.findProfileById(userId, actor.schoolId);
     if (!profile) {
       throw new NotFoundException('User not found');

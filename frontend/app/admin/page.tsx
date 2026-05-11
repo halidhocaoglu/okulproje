@@ -221,6 +221,11 @@ export default function AdminPage() {
                 key={user.id}
                 className="rounded-[1.4rem] border border-[rgba(127,183,220,0.16)] bg-[linear-gradient(180deg,rgba(12,28,41,0.96),rgba(8,19,29,0.92))] p-4"
               >
+                {profile?.id === user.id ? (
+                  <p className="mb-3 text-xs text-[#7fb7dc]">
+                    Your own account cannot be banned or downgraded from this panel.
+                  </p>
+                ) : null}
                 <div className="mb-3 flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
                   <div>
                     <h2 className="font-semibold text-white">{user.fullName}</h2>
@@ -242,7 +247,7 @@ export default function AdminPage() {
                     onChange={(event) =>
                       void onUpdateUser(user.id, { role: event.target.value })
                     }
-                    disabled={savingUserId === user.id}
+                    disabled={savingUserId === user.id || profile?.id === user.id}
                     className="isu-input rounded-xl bg-[rgba(8,19,29,0.94)] px-3 py-2 text-sm text-slate-100"
                   >
                     <option value="student" className="bg-[#0b1722] text-slate-100">Student</option>
@@ -267,7 +272,7 @@ export default function AdminPage() {
                   <button
                     type="button"
                     onClick={() => void onUpdateUser(user.id, { isActive: !user.isActive })}
-                    disabled={savingUserId === user.id}
+                    disabled={savingUserId === user.id || profile?.id === user.id}
                     className={`rounded-xl px-3 py-2 text-sm font-medium ${
                       user.isActive
                         ? "bg-rose-500 text-white hover:bg-rose-400"
