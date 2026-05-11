@@ -171,24 +171,59 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-slate-950 px-4 py-4 text-slate-100">
+    <main className="isu-dashboard-scene relative min-h-screen overflow-hidden px-4 py-4 text-slate-100 sm:px-5 lg:px-6">
+      <div className="isu-soft-pattern pointer-events-none absolute inset-0" />
       <div className="isu-orb left-[-8rem] top-10 h-64 w-64 opacity-60" />
       <div className="isu-orb bottom-[-9rem] right-[-6rem] h-80 w-80 opacity-55" />
-      <div className="relative mx-auto max-w-6xl">
-        <header className="isu-panel relative mb-5 overflow-hidden rounded-[1.75rem] px-5 py-4">
+      <div className="relative mx-auto max-w-7xl">
+        <header className="isu-topbar relative mb-5 overflow-hidden rounded-[1.75rem] px-5 py-5">
           <div className="isu-sheen" />
-          <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-center gap-3 text-sm">
-            <Link href="/chat" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Chat</Link>
-            <Link href="/admin" className="isu-button-primary rounded-full px-3 py-1.5 font-medium">Moderation</Link>
-            <Link href="/admin/tools" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Admin Tools</Link>
-          </div>
-          <div className="flex items-center gap-2">
-            <NotificationBell />
-            <button onClick={logout} className="rounded-md border border-slate-700 px-3 py-1 text-sm hover:bg-slate-800">
-              Logout
-            </button>
-          </div>
+          <div className="relative flex flex-col gap-5">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-2xl">
+                <p className="text-xs uppercase tracking-[0.34em] text-[#7fb7dc]">Control center</p>
+                <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                  Keep moderation and user management in one quieter workspace.
+                </h1>
+                <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--isu-text-soft)] sm:text-base">
+                  Review reports, update roles, and move people between departments without the panel feeling overloaded on smaller screens.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 self-start">
+                <NotificationBell />
+                <button onClick={logout} className="isu-chip rounded-2xl px-4 py-2 text-sm text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
+                  Logout
+                </button>
+              </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-[1.2fr,1fr,1fr,1fr]">
+              <div className="flex flex-wrap gap-2 rounded-[1.4rem] border border-[rgba(127,183,220,0.14)] bg-[rgba(7,17,27,0.4)] p-2 text-sm">
+                <Link href="/chat" className="isu-chip rounded-full px-4 py-2 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Chat</Link>
+                <Link href="/admin" className="isu-button-primary rounded-full px-4 py-2 font-medium">Moderation</Link>
+                <Link href="/admin/tools" className="isu-chip rounded-full px-4 py-2 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Admin Tools</Link>
+                <Link href="/groups" className="isu-chip rounded-full px-4 py-2 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Groups</Link>
+              </div>
+
+              <div className="isu-stat-card rounded-[1.4rem] px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.24em] text-[#7fb7dc]">Managed users</p>
+                <p className="mt-3 text-3xl font-semibold text-white">{users.length}</p>
+                <p className="mt-2 text-sm text-[var(--isu-text-soft)]">Accounts visible in the current admin view.</p>
+              </div>
+
+              <div className="isu-stat-card rounded-[1.4rem] px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.24em] text-[#7fb7dc]">Reports</p>
+                <p className="mt-3 text-3xl font-semibold text-white">{reports.length}</p>
+                <p className="mt-2 text-sm text-[var(--isu-text-soft)]">Cases matching the active filters.</p>
+              </div>
+
+              <div className="isu-stat-card rounded-[1.4rem] px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.24em] text-[#7fb7dc]">Departments</p>
+                <p className="mt-3 text-3xl font-semibold text-white">{departments.length}</p>
+                <p className="mt-2 text-sm text-[var(--isu-text-soft)]">Available department destinations.</p>
+              </div>
+            </div>
           </div>
         </header>
 
@@ -219,7 +254,7 @@ export default function AdminPage() {
             {users.map((user) => (
               <article
                 key={user.id}
-                className="rounded-[1.4rem] border border-[rgba(127,183,220,0.16)] bg-[linear-gradient(180deg,rgba(12,28,41,0.96),rgba(8,19,29,0.92))] p-4"
+                className="rounded-[1.4rem] border border-[rgba(127,183,220,0.16)] bg-[linear-gradient(180deg,rgba(12,28,41,0.96),rgba(8,19,29,0.92))] p-4 shadow-[0_14px_34px_rgba(4,10,16,0.16)]"
               >
                 {profile?.id === user.id ? (
                   <p className="mb-3 text-xs text-[#7fb7dc]">
@@ -248,7 +283,7 @@ export default function AdminPage() {
                       void onUpdateUser(user.id, { role: event.target.value })
                     }
                     disabled={savingUserId === user.id || profile?.id === user.id}
-                    className="isu-input rounded-xl bg-[rgba(8,19,29,0.94)] px-3 py-2 text-sm text-slate-100"
+                    className="isu-input rounded-2xl bg-[rgba(8,19,29,0.94)] px-3 py-2 text-sm text-slate-100"
                   >
                     <option value="student" className="bg-[#0b1722] text-slate-100">Student</option>
                     <option value="moderator" className="bg-[#0b1722] text-slate-100">Moderator</option>
@@ -260,7 +295,7 @@ export default function AdminPage() {
                       void onUpdateUser(user.id, { departmentId: event.target.value })
                     }
                     disabled={savingUserId === user.id}
-                    className="isu-input rounded-xl bg-[rgba(8,19,29,0.94)] px-3 py-2 text-sm text-slate-100"
+                    className="isu-input rounded-2xl bg-[rgba(8,19,29,0.94)] px-3 py-2 text-sm text-slate-100"
                   >
                     <option value="" className="bg-[#0b1722] text-slate-100">No department</option>
                     {departments.map((department) => (
@@ -273,7 +308,7 @@ export default function AdminPage() {
                     type="button"
                     onClick={() => void onUpdateUser(user.id, { isActive: !user.isActive })}
                     disabled={savingUserId === user.id || profile?.id === user.id}
-                    className={`rounded-xl px-3 py-2 text-sm font-medium ${
+                    className={`rounded-2xl px-3 py-2 text-sm font-medium ${
                       user.isActive
                         ? "bg-rose-500 text-white hover:bg-rose-400"
                         : "isu-button-primary"
@@ -336,7 +371,7 @@ export default function AdminPage() {
           ) : (
             <div className="space-y-3">
               {reports.map((report) => (
-                <article key={report.id} className="rounded-lg border border-slate-800 bg-slate-950 p-4">
+                <article key={report.id} className="rounded-[1.4rem] border border-[rgba(127,183,220,0.14)] bg-[rgba(8,19,29,0.72)] p-4">
                   <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
@@ -360,18 +395,18 @@ export default function AdminPage() {
                     </div>
 
                     {report.status === "open" || report.status === "under_review" ? (
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap gap-2">
                         <button
                           disabled={reviewingId === report.id}
                           onClick={() => void onReview(report.id, "dismissed")}
-                          className="rounded-md border border-slate-700 px-3 py-2 text-sm hover:bg-slate-800 disabled:opacity-60"
+                          className="isu-chip rounded-full px-4 py-2 text-sm text-slate-200 hover:bg-[rgba(56,128,176,0.16)] disabled:opacity-60"
                         >
                           Dismiss
                         </button>
                         <button
                           disabled={reviewingId === report.id}
                           onClick={() => void onReview(report.id, "resolved")}
-                          className="rounded-md bg-cyan-500 px-3 py-2 text-sm font-medium text-slate-950 hover:bg-cyan-400 disabled:opacity-60"
+                          className="isu-button-primary rounded-full px-4 py-2 text-sm font-medium disabled:opacity-60"
                         >
                           Resolve
                         </button>

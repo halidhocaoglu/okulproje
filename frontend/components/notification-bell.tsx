@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import {
   ApiError,
@@ -25,6 +25,7 @@ type NotificationCreatedPayload = {
 
 export function NotificationBell() {
   const router = useRouter();
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<NotificationItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -70,6 +71,30 @@ export function NotificationBell() {
   useEffect(() => {
     if (!open) return;
     void markAllReadIfNeeded();
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    function onPointerDown(event: MouseEvent) {
+      const target = event.target;
+      if (!(target instanceof Node)) {
+        return;
+      }
+
+      if (containerRef.current?.contains(target)) {
+        return;
+      }
+
+      setOpen(false);
+    }
+
+    document.addEventListener("mousedown", onPointerDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+    };
   }, [open]);
 
   const sortedItems = useMemo(
@@ -165,12 +190,13 @@ export function NotificationBell() {
   }
 
   return (
-    <div className="relative">
+    <div ref={containerRef} className="relative">
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
         className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-[rgba(127,183,220,0.18)] bg-[rgba(7,17,27,0.72)] text-sm transition hover:bg-[rgba(56,128,176,0.14)]"
         aria-label="Notifications"
+        aria-expanded={open}
       >
         <span aria-hidden="true">🔔</span>
         {unreadCount > 0 ? (
@@ -181,28 +207,37 @@ export function NotificationBell() {
       </button>
 
       {open ? (
-        <div className="absolute right-0 z-50 mt-2 w-[min(20rem,calc(100vw-2rem))] rounded-2xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.96)] p-2 shadow-xl backdrop-blur sm:w-80">
-          <div className="mb-2 flex items-center justify-between px-2 py-1">
+        <div className="fixed left-4 right-4 top-20 z-50 rounded-[1.5rem] border border-[rgba(127,183,220,0.18)] bg-[linear-gradient(180deg,rgba(10,21,33,0.98),rgba(8,19,29,0.98))] p-2 shadow-[0_28px_80px_rgba(4,10,16,0.4)] backdrop-blur sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80 sm:min-w-[20rem]">
+          <div className="mb-2 flex items-center justify-between px-2 py-2">
             <p className="text-sm font-medium">Notifications</p>
             <span className="text-xs text-slate-400">{unreadCount} unread</span>
           </div>
 
-          <div className="max-h-80 space-y-1 overflow-y-auto">
+          <div className="isu-scroll max-h-[60vh] space-y-1 overflow-y-auto sm:max-h-80">
             {sortedItems.length === 0 ? (
-              <p className="px-2 py-3 text-xs text-slate-400">No notifications yet.</p>
+              <p className="px-3 py-4 text-xs text-slate-400">No notifications yet.</p>
             ) : (
               sortedItems.map((item) => (
                 <button
                   key={item.id}
                   type="button"
                   onClick={() => void onNotificationClick(item)}
-                  className={`w-full rounded-md px-2 py-2 text-left hover:bg-slate-800 ${
-                    item.isRead ? "opacity-80" : "bg-slate-800/60"
+                  className={`w-full rounded-xl border px-3 py-3 text-left transition hover:border-[rgba(127,183,220,0.26)] hover:bg-[rgba(16,33,49,0.84)] ${
+                    item.isRead
+                      ? "border-transparent bg-transparent opacity-80"
+                      : "border-[rgba(127,183,220,0.12)] bg-[rgba(16,33,49,0.76)]"
                   }`}
                 >
-                  <p className="text-xs font-medium text-slate-100">{item.title}</p>
-                  <p className="mt-0.5 line-clamp-2 text-xs text-slate-300">{item.content}</p>
-                  <p className="mt-1 text-[11px] text-slate-500">{formatRelative(item.createdAt)}</p>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-xs font-medium text-slate-100">{item.title}</p>
+                      <p className="mt-1 line-clamp-2 text-xs leading-5 text-slate-300">{item.content}</p>
+                    </div>
+                    {!item.isRead ? (
+                      <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-[#54a4da]" />
+                    ) : null}
+                  </div>
+                  <p className="mt-2 text-[11px] text-slate-500">{formatRelative(item.createdAt)}</p>
                 </button>
               ))
             )}

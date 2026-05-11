@@ -249,43 +249,62 @@ export default function SearchPage() {
       <div className="search-pattern pointer-events-none absolute inset-0" />
       <div className="isu-orb left-[-8rem] top-10 h-64 w-64 opacity-65" />
       <div className="isu-orb bottom-[-9rem] right-[-4rem] h-80 w-80 opacity-55" />
-      <div className="relative mx-auto max-w-6xl px-4 py-4">
-        <header className="isu-panel relative mb-5 overflow-hidden rounded-[1.75rem] px-5 py-4 shadow-[0_20px_80px_rgba(8,19,29,0.35)]">
+      <div className="relative mx-auto max-w-7xl px-4 py-4 sm:px-5 lg:px-6">
+        <header className="isu-topbar relative mb-5 overflow-hidden rounded-[1.75rem] px-5 py-5 shadow-[0_20px_80px_rgba(8,19,29,0.35)]">
           <div className="isu-sheen" />
-          <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div>
+          <div className="relative flex flex-col gap-5">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-2xl">
               <p className="text-xs uppercase tracking-[0.3em] text-[#7fb7dc]">Discovery</p>
-              <h1 className="mt-2 text-2xl font-semibold text-white">Search the network</h1>
+                <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">Search the network</h1>
+                <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--isu-text-soft)] sm:text-base">
+                  Find people, groups, and shared materials from one calmer search layer instead of bouncing across screens.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 self-start">
+                <NotificationBell />
+                <button
+                  onClick={logout}
+                  className="isu-chip rounded-2xl px-4 py-2 text-sm text-slate-200 hover:bg-[rgba(56,128,176,0.16)]"
+                >
+                  Logout
+                </button>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <NotificationBell />
-              <button
-                onClick={logout}
-                className="isu-chip px-3 py-1.5 text-sm text-slate-200 hover:bg-[rgba(56,128,176,0.16)]"
-              >
-                Logout
-              </button>
+
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-[1.2fr,1fr,1fr,1fr]">
+              <nav className="flex flex-wrap gap-2 rounded-[1.4rem] border border-[rgba(127,183,220,0.14)] bg-[rgba(7,17,27,0.4)] p-2 text-sm">
+                <Link href="/chat" className="isu-chip rounded-full px-4 py-2 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Chat</Link>
+                <Link href="/materials" className="isu-chip rounded-full px-4 py-2 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Materials</Link>
+                <Link href="/search" className="isu-button-primary rounded-full px-4 py-2 font-medium">Search</Link>
+                <Link href="/groups" className="isu-chip rounded-full px-4 py-2 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Groups</Link>
+                <Link href="/friends" className="isu-chip rounded-full px-4 py-2 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Friends</Link>
+              </nav>
+
+              <div className="isu-stat-card rounded-[1.4rem] px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.24em] text-[#7fb7dc]">Scope</p>
+                <p className="mt-3 text-3xl font-semibold text-white">3</p>
+                <p className="mt-2 text-sm text-[var(--isu-text-soft)]">People, materials, and groups in one pass.</p>
+              </div>
+
+              <div className="isu-stat-card rounded-[1.4rem] px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.24em] text-[#7fb7dc]">Active tab</p>
+                <p className="mt-3 text-xl font-semibold text-white">{tabs.find((tab) => tab.key === activeTab)?.label}</p>
+                <p className="mt-2 text-sm text-[var(--isu-text-soft)]">Quick filtering without changing pages.</p>
+              </div>
+
+              <div className="isu-stat-card rounded-[1.4rem] px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.24em] text-[#7fb7dc]">Visible results</p>
+                <p className="mt-3 text-3xl font-semibold text-white">{results.length}</p>
+                <p className="mt-2 text-sm text-[var(--isu-text-soft)]">Current matches for the submitted query.</p>
+              </div>
             </div>
-          </div>
-          <div className="relative mt-5 flex flex-wrap gap-2 text-sm">
-            <Link href="/chat" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
-              Chat
-            </Link>
-            <Link href="/materials" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
-              Materials
-            </Link>
-            <Link href="/search" className="isu-button-primary rounded-full px-3 py-1.5 font-medium">
-              Search
-            </Link>
-            <Link href="/groups" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
-              Groups
-            </Link>
           </div>
         </header>
 
         <section className="isu-panel rounded-[1.75rem] p-5 shadow-[0_20px_80px_rgba(8,19,29,0.28)]">
-          <form onSubmit={onSearch} className="mb-4 flex flex-col gap-3">
-            <div className="flex gap-2">
+          <form onSubmit={onSearch} className="mb-5 flex flex-col gap-4">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -295,7 +314,7 @@ export default function SearchPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="isu-button-primary rounded-2xl px-5 py-3 text-sm font-medium disabled:opacity-70"
+                className="isu-button-primary rounded-2xl px-5 py-3 text-sm font-medium disabled:opacity-70 sm:min-w-[140px]"
               >
                 {loading ? "Searching..." : "Search"}
               </button>
@@ -348,7 +367,7 @@ export default function SearchPage() {
               ))}
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="grid gap-3 lg:grid-cols-2">
               {visibleResults.map((result) => {
                 const materialHref = toMaterialHref(result);
                 const userHref = toUserHref(result);
@@ -378,7 +397,7 @@ export default function SearchPage() {
                     <Link
                       key={`${result.entityType}-${result.entityId}`}
                       href={materialHref ?? userHref ?? groupHref ?? "#"}
-                      className="block rounded-[1.5rem] border border-[rgba(127,183,220,0.16)] bg-[linear-gradient(180deg,rgba(12,28,41,0.96),rgba(8,19,29,0.92))] p-4 transition hover:border-[rgba(127,183,220,0.34)]"
+                      className="block rounded-[1.5rem] border border-[rgba(127,183,220,0.16)] bg-[linear-gradient(180deg,rgba(12,28,41,0.96),rgba(8,19,29,0.92))] p-4 transition hover:border-[rgba(127,183,220,0.34)] hover:shadow-[0_20px_48px_rgba(4,10,16,0.24)]"
                     >
                       {content}
                     </Link>
