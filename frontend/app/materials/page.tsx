@@ -251,57 +251,58 @@ export default function MaterialsPage() {
       <div className="materials-pattern pointer-events-none absolute inset-0" />
       <div className="isu-orb left-[-8rem] top-6 h-64 w-64 opacity-65" />
       <div className="isu-orb bottom-[-10rem] right-[-4rem] h-80 w-80 opacity-55" />
-      <div className="relative mx-auto max-w-7xl px-4 py-4">
-        <header className="isu-panel relative mb-5 overflow-hidden rounded-[1.75rem] px-5 py-4 shadow-[0_20px_80px_rgba(8,19,29,0.35)]">
+      <div className="relative mx-auto max-w-7xl px-4 py-4 sm:px-5 lg:px-6">
+        <header className="isu-topbar relative mb-5 overflow-hidden rounded-[1.75rem] px-5 py-5 shadow-[0_20px_80px_rgba(8,19,29,0.35)]">
           <div className="isu-sheen" />
-          <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div>
+          <div className="relative flex flex-col gap-5">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-2xl">
               <p className="text-xs uppercase tracking-[0.3em] text-[#7fb7dc]">Knowledge Hub</p>
-              <h1 className="mt-2 text-2xl font-semibold text-white">Materials Workspace</h1>
-              <p className="mt-2 max-w-2xl text-sm text-[var(--isu-text-soft)]">
-                Browse academic uploads, filter by department and course, and publish new material with the same bright campus theme.
-              </p>
+                <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">Materials Workspace</h1>
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--isu-text-soft)] sm:text-base">
+                  Browse academic uploads, filter by department and course, and publish new material without breaking the calmer campus visual system.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 self-start">
+                <NotificationBell />
+                <button
+                  onClick={logout}
+                  className="isu-chip rounded-2xl px-4 py-2 text-sm text-slate-200 hover:bg-[rgba(56,128,176,0.16)]"
+                >
+                  Logout
+                </button>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <NotificationBell />
-              <button
-                onClick={logout}
-                className="isu-chip px-3 py-1.5 text-sm text-slate-200 hover:bg-[rgba(56,128,176,0.16)]"
-              >
-                Logout
-              </button>
+
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-[1.2fr,1fr,1fr,1fr]">
+              <nav className="flex flex-wrap gap-2 rounded-[1.4rem] border border-[rgba(127,183,220,0.14)] bg-[rgba(7,17,27,0.4)] p-2 text-sm">
+                <Link href="/chat" className="isu-chip rounded-full px-4 py-2 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Chat</Link>
+                <Link href="/materials" className="isu-button-primary rounded-full px-4 py-2 font-medium">Materials</Link>
+                <Link href="/search" className="isu-chip rounded-full px-4 py-2 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Search</Link>
+                <Link href="/departments" className="isu-chip rounded-full px-4 py-2 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Departments</Link>
+                <Link href="/courses" className="isu-chip rounded-full px-4 py-2 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">Courses</Link>
+              </nav>
+
+              <div className="isu-stat-card rounded-[1.4rem] px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.24em] text-[#7fb7dc]">Visible</p>
+                <p className="mt-3 text-3xl font-semibold text-white">{materials.length}</p>
+                <p className="mt-2 text-sm text-[var(--isu-text-soft)]">Resources currently matching the active filters.</p>
+              </div>
+
+              <div className="isu-stat-card rounded-[1.4rem] px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.24em] text-[#7fb7dc]">Sort</p>
+                <p className="mt-3 text-lg font-semibold text-white">{sort === "newest" ? "Newest" : "Most upvoted"}</p>
+                <p className="mt-2 text-sm text-[var(--isu-text-soft)]">Current ordering emphasis in the library view.</p>
+              </div>
+
+              <div className="isu-stat-card rounded-[1.4rem] px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.24em] text-[#7fb7dc]">Create</p>
+                <p className="mt-3 text-lg font-semibold text-white">Ready</p>
+                <p className="mt-2 text-sm text-[var(--isu-text-soft)]">Publish new material from the left-side submission form.</p>
+              </div>
             </div>
-          </div>
-          <div className="relative mt-5 flex flex-wrap gap-2 text-sm">
-            <Link href="/chat" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
-              Chat
-            </Link>
-            <Link
-              href="/materials"
-              className="isu-button-primary rounded-full px-3 py-1.5 font-medium"
-            >
-              Materials
-            </Link>
-            <Link href="/search" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
-              Search
-            </Link>
-            <Link href="/departments" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
-              Departments
-            </Link>
-            <Link href="/courses" className="isu-chip px-3 py-1.5 text-slate-200 hover:bg-[rgba(56,128,176,0.16)]">
-              Courses
-            </Link>
           </div>
         </header>
-
-        <div className="mb-5 flex flex-wrap gap-2 text-xs text-slate-300">
-          <Link href="/departments" className="isu-chip px-3 py-1.5 hover:bg-[rgba(56,128,176,0.16)]">
-            Browse departments
-          </Link>
-          <Link href="/courses" className="isu-chip px-3 py-1.5 hover:bg-[rgba(56,128,176,0.16)]">
-            Browse courses
-          </Link>
-        </div>
 
         <div className="grid gap-4 lg:grid-cols-[320px_1fr]">
           <aside className="space-y-4">

@@ -101,6 +101,33 @@ body {
     0 10px 30px rgba(var(--isu-primary-rgb), 0.12);
 }
 
+select.isu-input {
+  color-scheme: dark;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #d8efff 50%),
+    linear-gradient(135deg, #d8efff 50%, transparent 50%),
+    linear-gradient(180deg, rgba(6, 15, 24, 0.94), rgba(10, 21, 33, 0.92));
+  background-position:
+    calc(100% - 20px) calc(50% - 2px),
+    calc(100% - 14px) calc(50% - 2px),
+    0 0;
+  background-size:
+    6px 6px,
+    6px 6px,
+    100% 100%;
+  background-repeat: no-repeat;
+  padding-right: 2.75rem;
+}
+
+.isu-input option,
+.isu-input optgroup {
+  background: #0b1722;
+  color: #f8fbff;
+}
+
 .isu-button-primary {
   background: linear-gradient(135deg, #54a4da, #3880b0 48%, #25648f 100%);
   color: #07131d;
