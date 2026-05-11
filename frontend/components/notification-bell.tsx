@@ -155,8 +155,9 @@ export function NotificationBell() {
         type="button"
         onClick={() => setOpen((prev) => !prev)}
         className="relative rounded-md border border-slate-700 px-3 py-1 text-sm hover:bg-slate-800"
+        aria-label="Notifications"
       >
-        Bell
+        <span aria-hidden="true">🔔</span>
         {unreadCount > 0 ? (
           <span className="absolute -right-2 -top-2 min-w-[18px] rounded-full bg-cyan-500 px-1 text-[11px] font-semibold text-slate-950">
             {unreadCount}
