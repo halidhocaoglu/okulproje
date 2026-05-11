@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 import {
+  deleteGroup,
   GroupDetail,
   UserProfile,
   getCurrentUser,
@@ -26,6 +27,8 @@ export default function GroupDetailPage() {
   const [inviteResults, setInviteResults] = useState<UserProfile[]>([]);
   const [inviteLoading, setInviteLoading] = useState(false);
   const [invitingUserId, setInvitingUserId] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
     const token = getAccessToken();
@@ -89,6 +92,21 @@ export default function GroupDetailPage() {
     }
   }
 
+  async function onDeleteGroup() {
+    if (!group) return;
+
+    setDeleteLoading(true);
+    setError(null);
+    try {
+      await deleteGroup(group.id);
+      router.replace("/groups?deleted=1");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete group.");
+      setDeleteLoading(false);
+      setShowDeleteConfirm(false);
+    }
+  }
+
   function logout() {
     clearAccessToken();
     router.replace("/");
@@ -101,6 +119,7 @@ export default function GroupDetailPage() {
       group?.members?.some(
         (member) => member.id === viewer?.id && ["owner", "admin"].includes(member.roomRole ?? ""),
       ));
+  const canDeleteGroup = canInvite;
 
   const statMembers = group?.memberCount ?? group?.members?.length ?? 0;
   const roleBreakdown = useMemo(() => {
@@ -209,16 +228,27 @@ export default function GroupDetailPage() {
                   </div>
                 </div>
 
-                {group.roomId ? (
-                  <button
-                    onClick={() => router.push(`/chat?roomId=${group.roomId}`)}
-                    className="isu-button-primary mt-5 rounded-2xl px-5 py-3 text-sm font-semibold"
-                  >
-                    Open Group Chat
-                  </button>
-                ) : (
-                  <p className="mt-5 text-sm text-slate-500">No linked chat room yet.</p>
-                )}
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                  {group.roomId ? (
+                    <button
+                      onClick={() => router.push(`/chat?roomId=${group.roomId}`)}
+                      className="isu-button-primary rounded-2xl px-5 py-3 text-sm font-semibold"
+                    >
+                      Open Group Chat
+                    </button>
+                  ) : (
+                    <p className="py-3 text-sm text-slate-500">No linked chat room yet.</p>
+                  )}
+                  {canDeleteGroup ? (
+                    <button
+                      type="button"
+                      onClick={() => setShowDeleteConfirm(true)}
+                      className="rounded-2xl border border-rose-500/30 bg-rose-500/10 px-5 py-3 text-sm font-semibold text-rose-200 transition hover:bg-rose-500/18"
+                    >
+                      Delete Group
+                    </button>
+                  ) : null}
+                </div>
               </div>
 
               <section className="isu-panel rounded-[1.75rem] p-5">
@@ -337,6 +367,37 @@ export default function GroupDetailPage() {
           </div>
         )}
       </div>
+
+      {showDeleteConfirm && group ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(3,9,16,0.72)] px-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-[1.75rem] border border-[rgba(127,183,220,0.16)] bg-[linear-gradient(180deg,rgba(17,34,52,0.97),rgba(7,16,26,0.97))] p-6 shadow-[0_32px_90px_rgba(2,10,18,0.55)]">
+            <p className="text-xs uppercase tracking-[0.3em] text-rose-300">Delete group</p>
+            <h2 className="mt-3 text-2xl font-semibold text-white">Remove {group.name}?</h2>
+            <p className="mt-3 text-sm leading-6 text-[var(--isu-text-soft)]">
+              This will archive the linked room, deactivate members inside the group, and cancel any pending invites.
+            </p>
+
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deleteLoading}
+                className="isu-chip rounded-2xl px-4 py-3 text-sm text-slate-200 disabled:opacity-60"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => void onDeleteGroup()}
+                disabled={deleteLoading}
+                className="rounded-2xl border border-rose-500/30 bg-rose-500/16 px-4 py-3 text-sm font-semibold text-rose-100 transition hover:bg-rose-500/24 disabled:opacity-60"
+              >
+                {deleteLoading ? "Deleting..." : "Delete group"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }

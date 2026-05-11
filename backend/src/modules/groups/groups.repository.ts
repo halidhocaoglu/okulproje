@@ -428,6 +428,84 @@ export class GroupsRepository {
     }
   }
 
+  async remove(schoolId: string, groupId: string) {
+    await this.ensureSchema();
+    const client = await this.pool.connect();
+
+    try {
+      await client.query('BEGIN');
+
+      await client.query(
+        `
+          UPDATE group_invites
+          SET
+            status = 'cancelled',
+            responded_at = COALESCE(responded_at, now()),
+            updated_at = now()
+          WHERE school_id = $1
+            AND group_id = $2
+            AND status = 'pending'
+        `,
+        [schoolId, groupId],
+      );
+
+      await client.query(
+        `
+          UPDATE chat_room_members
+          SET
+            is_active = false,
+            left_at = COALESCE(left_at, now()),
+            updated_at = now()
+          WHERE room_id IN (
+            SELECT id
+            FROM chat_rooms
+            WHERE school_id = $1
+              AND group_id = $2
+              AND room_type = 'group'
+          )
+            AND is_active = true
+        `,
+        [schoolId, groupId],
+      );
+
+      await client.query(
+        `
+          UPDATE chat_rooms
+          SET
+            is_active = false,
+            is_archived = true,
+            updated_at = now()
+          WHERE school_id = $1
+            AND group_id = $2
+            AND room_type = 'group'
+        `,
+        [schoolId, groupId],
+      );
+
+      const groupResult = await client.query(
+        `
+          UPDATE groups
+          SET
+            is_active = false,
+            updated_at = now()
+          WHERE school_id = $1
+            AND id = $2
+            AND is_active = true
+          RETURNING id
+        `,
+        [schoolId, groupId],
+      );
+
+      await client.query('COMMIT');
+      return groupResult.rowCount > 0;
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
   private async ensureSchema() {
     if (this.schemaReady) {
       return;

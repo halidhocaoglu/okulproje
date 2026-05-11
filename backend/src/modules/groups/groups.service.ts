@@ -119,6 +119,34 @@ export class GroupsService {
     return this.groupsRepository.respondToInvite(user.schoolId, inviteId, dto.action);
   }
 
+  async remove(user: CurrentUser, groupId: string) {
+    this.assertUser(user);
+
+    const group = await this.groupsRepository.findById(user.schoolId, groupId);
+    if (!group) {
+      throw new NotFoundException('Group not found');
+    }
+
+    const membership = await this.groupsRepository.findGroupMemberRole(
+      user.schoolId,
+      groupId,
+      user.id,
+    );
+    const canDelete =
+      group.ownerId === user.id || Boolean(membership && ['owner', 'admin'].includes(membership.roomRole));
+
+    if (!canDelete) {
+      throw new ForbiddenException('Only group owners or admins can delete groups');
+    }
+
+    const removed = await this.groupsRepository.remove(user.schoolId, groupId);
+    if (!removed) {
+      throw new NotFoundException('Group not found');
+    }
+
+    return { removed: true, id: groupId };
+  }
+
   private assertUser(user: CurrentUser) {
     if (!user?.id || !user?.schoolId) {
       throw new UnauthorizedException('Authentication required');

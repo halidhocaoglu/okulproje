@@ -970,6 +970,12 @@ export async function createGroup(payload: {
   });
 }
 
+export async function deleteGroup(groupId: string): Promise<{ removed: boolean; id: string }> {
+  return request<{ removed: boolean; id: string }>(`/groups/${groupId}`, {
+    method: "DELETE"
+  });
+}
+
 export async function getReceivedGroupInvites(): Promise<GroupInvite[]> {
   return request<GroupInvite[]>("/groups/invites/received");
 }

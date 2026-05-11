@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 
 import { CurrentUserDecorator, CurrentUser } from '../../shared/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -54,5 +54,13 @@ export class GroupsController {
     @Body() dto: CreateGroupInviteDto,
   ) {
     return this.groupsService.inviteMember(user, groupId, dto);
+  }
+
+  @Delete(':groupId')
+  remove(
+    @CurrentUserDecorator() user: CurrentUser,
+    @Param('groupId') groupId: string,
+  ) {
+    return this.groupsService.remove(user, groupId);
   }
 }
