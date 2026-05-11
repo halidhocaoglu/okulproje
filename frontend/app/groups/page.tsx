@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { GroupSummary, createGroup, getGroups } from "../../lib/api";
+import { GroupInvite, GroupSummary, createGroup, getGroups, getReceivedGroupInvites, respondToGroupInvite } from "../../lib/api";
 import { clearAccessToken, getAccessToken } from "../../lib/auth";
 import { NotificationBell } from "../../components/notification-bell";
 
@@ -11,8 +11,10 @@ export default function GroupsPage() {
   const PAGE_SIZE = 12;
   const router = useRouter();
   const [groups, setGroups] = useState<GroupSummary[]>([]);
+  const [invites, setInvites] = useState<GroupInvite[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [inviteActionId, setInviteActionId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -34,7 +36,9 @@ export default function GroupsPage() {
     setLoading(true);
     setError(null);
     try {
-      setGroups(await getGroups());
+      const [nextGroups, nextInvites] = await Promise.all([getGroups(), getReceivedGroupInvites()]);
+      setGroups(nextGroups);
+      setInvites(nextInvites);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to load groups.";
       if (message.includes("401") || message.includes("Unauthorized") || message.includes("NO_TOKEN")) {
@@ -99,6 +103,20 @@ export default function GroupsPage() {
   function logout() {
     clearAccessToken();
     router.replace("/");
+  }
+
+  async function onRespondInvite(inviteId: string, action: "accept" | "reject") {
+    setInviteActionId(`${inviteId}:${action}`);
+    setError(null);
+    try {
+      await respondToGroupInvite(inviteId, action);
+      await loadGroups();
+      setSuccess(action === "accept" ? "Invite accepted." : "Invite rejected.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Invite action failed.");
+    } finally {
+      setInviteActionId(null);
+    }
   }
 
   return (
@@ -173,6 +191,39 @@ export default function GroupsPage() {
           </form>
 
           <section className="rounded-xl border border-slate-800 bg-slate-900 p-4">
+            {invites.length > 0 ? (
+              <div className="mb-5 rounded-xl border border-[rgba(127,183,220,0.16)] bg-[rgba(8,19,29,0.72)] p-4">
+                <h3 className="mb-3 text-base font-semibold">Pending invites</h3>
+                <div className="space-y-3">
+                  {invites.map((invite) => (
+                    <div key={invite.id} className="rounded-lg border border-slate-800 bg-slate-950 p-3">
+                      <p className="font-medium text-slate-100">{invite.group.name}</p>
+                      <p className="mt-1 text-sm text-slate-400">
+                        Invited by {invite.inviter.fullName || invite.inviter.username || "Unknown user"}
+                      </p>
+                      <div className="mt-3 flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => void onRespondInvite(invite.id, "accept")}
+                          disabled={inviteActionId === `${invite.id}:accept`}
+                          className="rounded-md border border-emerald-700 px-3 py-1 text-sm text-emerald-300 hover:bg-emerald-900/30 disabled:opacity-70"
+                        >
+                          Accept
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => void onRespondInvite(invite.id, "reject")}
+                          disabled={inviteActionId === `${invite.id}:reject`}
+                          className="rounded-md border border-rose-700 px-3 py-1 text-sm text-rose-300 hover:bg-rose-900/30 disabled:opacity-70"
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>
                 <h2 className="text-lg font-semibold">Groups</h2>

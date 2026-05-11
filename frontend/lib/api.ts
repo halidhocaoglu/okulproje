@@ -243,6 +243,24 @@ export type GroupDetail = GroupSummary & {
   }>;
 };
 
+export type GroupInvite = {
+  id: string;
+  groupId: string;
+  status: string;
+  createdAt?: string;
+  respondedAt?: string | null;
+  group: {
+    id: string;
+    name: string;
+    description?: string | null;
+  };
+  inviter: {
+    id: string;
+    fullName?: string | null;
+    username?: string | null;
+  };
+};
+
 export type UserProfile = {
   id: string;
   email: string;
@@ -250,6 +268,7 @@ export type UserProfile = {
   username?: string | null;
   bio?: string | null;
   role?: string;
+  isActive?: boolean;
   onboardingCompleted?: boolean;
   school?: {
     id: string;
@@ -258,6 +277,20 @@ export type UserProfile = {
   department?: {
     id: string;
     name: string;
+  } | null;
+};
+
+export type AdminManageUser = {
+  id: string;
+  email: string;
+  fullName: string;
+  username?: string | null;
+  role: string;
+  isActive: boolean;
+  departmentId?: string | null;
+  department?: {
+    id: string;
+    name?: string | null;
   } | null;
 };
 
@@ -937,8 +970,56 @@ export async function createGroup(payload: {
   });
 }
 
+export async function getReceivedGroupInvites(): Promise<GroupInvite[]> {
+  return request<GroupInvite[]>("/groups/invites/received");
+}
+
+export async function inviteGroupMember(
+  groupId: string,
+  inviteeId: string
+): Promise<unknown> {
+  return request(`/groups/${groupId}/invites`, {
+    method: "POST",
+    body: JSON.stringify({ inviteeId })
+  });
+}
+
+export async function respondToGroupInvite(
+  inviteId: string,
+  action: "accept" | "reject"
+): Promise<unknown> {
+  return request(`/groups/invites/${inviteId}/respond`, {
+    method: "POST",
+    body: JSON.stringify({ action })
+  });
+}
+
 export async function getUserById(userId: string): Promise<UserProfile> {
   return request<UserProfile>(`/users/${userId}`);
+}
+
+export async function searchSchoolUsers(query: string): Promise<UserProfile[]> {
+  const search = new URLSearchParams();
+  search.set("q", query);
+  return request<UserProfile[]>(`/users/search?${search.toString()}`);
+}
+
+export async function getManageableUsers(query = ""): Promise<AdminManageUser[]> {
+  const search = new URLSearchParams();
+  if (query.trim()) {
+    search.set("q", query.trim());
+  }
+  return request<AdminManageUser[]>(`/users/admin/manage${search.size ? `?${search.toString()}` : ""}`);
+}
+
+export async function adminUpdateUser(
+  userId: string,
+  payload: { role?: string; departmentId?: string; isActive?: boolean }
+): Promise<UserProfile> {
+  return request<UserProfile>(`/users/admin/${userId}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload)
+  });
 }
 
 export async function startDirectMessage(targetUserId: string): Promise<{

@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -7,6 +8,8 @@ import {
 import { AppLoggerService } from '../../infrastructure/logging/logger.service';
 import { CompleteOnboardingDto } from '../auth/dto/complete-onboarding.dto';
 import { PresenceService } from '../messaging/gateways/presence.service';
+import { CurrentUser } from '../../shared/decorators/current-user.decorator';
+import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserProfile } from './interfaces/user-profile.interface';
 import { UsersRepository } from './users.repository';
@@ -84,6 +87,49 @@ export class UsersService {
     return this.getCurrentProfile(userId, schoolId);
   }
 
+  async getManageableUsers(user: CurrentUser, query: string) {
+    this.assertAdmin(user);
+    return this.usersRepository.findManageableUsers(user.schoolId, query);
+  }
+
+  async adminUpdateUser(
+    actor: CurrentUser,
+    userId: string,
+    dto: AdminUpdateUserDto,
+  ) {
+    this.assertAdmin(actor);
+    const profile = await this.usersRepository.findProfileById(userId, actor.schoolId);
+    if (!profile) {
+      throw new NotFoundException('User not found');
+    }
+
+    const normalizedDepartmentId =
+      dto.departmentId === undefined ? undefined : dto.departmentId || null;
+
+    if (normalizedDepartmentId) {
+      const department = await this.usersRepository.findDepartmentByIdAndSchool(
+        normalizedDepartmentId,
+        actor.schoolId,
+      );
+      if (!department) {
+        throw new NotFoundException('Department not found in your school');
+      }
+    }
+
+    await this.usersRepository.adminUpdateUser(userId, actor.schoolId, {
+      role: dto.role,
+      departmentId: normalizedDepartmentId,
+      isActive: dto.isActive,
+    });
+
+    this.logger.log(
+      `Admin updated user ${userId}: role=${dto.role ?? 'unchanged'} active=${dto.isActive ?? 'unchanged'}`,
+      UsersService.name,
+    );
+
+    return this.getById(actor.schoolId, userId);
+  }
+
   async completeOnboarding(
     userId: string,
     schoolId: string,
@@ -112,5 +158,11 @@ export class UsersService {
     }
 
     await this.usersRepository.completeOnboarding(userId, schoolId, dto);
+  }
+
+  private assertAdmin(user: CurrentUser) {
+    if (!user.roles.includes('school_admin') && !user.roles.includes('moderator')) {
+      throw new ForbiddenException('Admin role required');
+    }
   }
 }

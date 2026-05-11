@@ -330,7 +330,7 @@ export default function LoginPage() {
               <label className="mb-4 block">
                 <span className="mb-2 block text-sm font-medium text-slate-200">Department</span>
                 <select
-                  className="isu-input w-full rounded-2xl px-4 py-3.5 outline-none"
+                  className="isu-input w-full rounded-2xl bg-[rgba(8,19,29,0.94)] px-4 py-3.5 text-slate-100 outline-none"
                   value={selectedDepartmentId}
                   onChange={(e) => setSelectedDepartmentId(e.target.value)}
                   required
@@ -339,7 +339,7 @@ export default function LoginPage() {
                     {departmentsLoading ? "Loading departments..." : "Select department"}
                   </option>
                   {departments.map((department) => (
-                    <option key={department.id} value={department.id}>
+                    <option key={department.id} value={department.id} className="bg-[#0b1722] text-slate-100">
                       {department.name}
                     </option>
                   ))}

@@ -20,6 +20,7 @@ export class UsersRepository {
           u.username,
           u.bio,
           u.role,
+          u.is_active,
           u.school_id,
           u.department_id,
           u.onboarding_completed,
@@ -68,6 +69,51 @@ export class UsersRepository {
     }));
   }
 
+  async findManageableUsers(schoolId: string, query: string) {
+    const normalizedQuery = `%${query.trim().toLowerCase()}%`;
+    const result = await this.pool.query(
+      `
+        SELECT
+          u.id,
+          u.email,
+          u.full_name,
+          u.username,
+          u.role,
+          u.is_active,
+          u.department_id,
+          d.name AS department_name
+        FROM users u
+        LEFT JOIN departments d ON d.id = u.department_id
+        WHERE u.school_id = $1
+          AND (
+            $2 = '%%'
+            OR lower(u.full_name) LIKE $2
+            OR lower(u.email) LIKE $2
+            OR lower(coalesce(u.username, '')) LIKE $2
+          )
+        ORDER BY u.is_active DESC, u.full_name ASC, u.id ASC
+        LIMIT 100
+      `,
+      [schoolId, normalizedQuery],
+    );
+
+    return result.rows.map((row) => ({
+      id: String(row.id),
+      email: String(row.email),
+      fullName: String(row.full_name),
+      username: row.username ? String(row.username) : null,
+      role: String(row.role),
+      isActive: Boolean(row.is_active),
+      departmentId: row.department_id ? String(row.department_id) : null,
+      department: row.department_id
+        ? {
+            id: String(row.department_id),
+            name: row.department_name ? String(row.department_name) : null,
+          }
+        : null,
+    }));
+  }
+
   async findDepartmentByIdAndSchool(departmentId: string, schoolId: string) {
     const result = await this.pool.query(
       `SELECT id, name FROM departments WHERE id = $1 AND school_id = $2 LIMIT 1`,
@@ -105,6 +151,31 @@ export class UsersRepository {
         dto.bio ?? null,
         dto.department_id ?? dto.departmentId ?? null,
         dto.username ?? null,
+      ],
+    );
+  }
+
+  async adminUpdateUser(
+    userId: string,
+    schoolId: string,
+    payload: { role?: string; departmentId?: string | null; isActive?: boolean },
+  ): Promise<void> {
+    await this.pool.query(
+      `
+        UPDATE users
+        SET
+          role = COALESCE($3, role),
+          department_id = COALESCE($4, department_id),
+          is_active = COALESCE($5, is_active),
+          updated_at = now()
+        WHERE id = $1 AND school_id = $2
+      `,
+      [
+        userId,
+        schoolId,
+        payload.role ?? null,
+        payload.departmentId ?? null,
+        payload.isActive ?? null,
       ],
     );
   }
@@ -147,6 +218,7 @@ export class UsersRepository {
       username: row.username ? String(row.username) : null,
       bio: row.bio ? String(row.bio) : null,
       role: String(row.role),
+      isActive: Boolean(row.is_active),
       schoolId: String(row.school_id),
       departmentId: row.department_id ? String(row.department_id) : null,
       onboardingCompleted: Boolean(row.onboarding_completed),

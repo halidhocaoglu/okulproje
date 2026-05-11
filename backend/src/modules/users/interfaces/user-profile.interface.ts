@@ -5,6 +5,7 @@ export interface UserProfile {
   username: string | null;
   bio: string | null;
   role: string;
+  isActive?: boolean;
   schoolId: string;
   departmentId: string | null;
   onboardingCompleted: boolean;

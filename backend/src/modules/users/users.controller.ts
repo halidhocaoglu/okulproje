@@ -10,6 +10,7 @@ import {
 
 import { CurrentUserDecorator, CurrentUser } from '../../shared/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AdminUpdateUserDto } from './dto/admin-update-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 
@@ -29,6 +30,14 @@ export class UsersController {
     @Query('q') query?: string,
   ) {
     return this.usersService.search(user.schoolId, query ?? '');
+  }
+
+  @Get('admin/manage')
+  getManageableUsers(
+    @CurrentUserDecorator() user: CurrentUser,
+    @Query('q') query?: string,
+  ) {
+    return this.usersService.getManageableUsers(user, query ?? '');
   }
 
   @Get(':userId/presence')
@@ -53,5 +62,14 @@ export class UsersController {
     @Body() dto: UpdateUserDto,
   ) {
     return this.usersService.updateMe(user.id, user.schoolId, dto);
+  }
+
+  @Patch('admin/:userId')
+  adminUpdateUser(
+    @CurrentUserDecorator() user: CurrentUser,
+    @Param('userId') userId: string,
+    @Body() dto: AdminUpdateUserDto,
+  ) {
+    return this.usersService.adminUpdateUser(user, userId, dto);
   }
 }

@@ -146,6 +146,21 @@ export function NotificationBell() {
       return;
     }
 
+    if ((item.type === "group_invite" || item.referenceType === "group") && item.relatedId) {
+      router.push(`/groups/${item.relatedId}`);
+      return;
+    }
+
+    if (
+      (item.type === "friend_request_received" ||
+        item.type === "friend_request_accepted" ||
+        item.type === "follow_received") &&
+      item.relatedId
+    ) {
+      router.push(`/users/${item.relatedId}`);
+      return;
+    }
+
     router.push("/chat");
   }
 

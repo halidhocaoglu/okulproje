@@ -51,6 +51,7 @@ export class AuthRepository {
         SELECT id, email, full_name, school_id, department_id, username, role
         FROM users
         WHERE email = $1
+          AND is_active = true
         LIMIT 1
       `,
       [email],
@@ -65,6 +66,7 @@ export class AuthRepository {
         SELECT id, email, full_name, school_id, department_id, username, role, password_hash
         FROM users
         WHERE email = $1
+          AND is_active = true
         LIMIT 1
       `,
       [email],
@@ -87,6 +89,7 @@ export class AuthRepository {
         SELECT id, email, full_name, school_id, department_id, username, role
         FROM users
         WHERE username = $1
+          AND is_active = true
         LIMIT 1
       `,
       [username],
@@ -101,6 +104,7 @@ export class AuthRepository {
         SELECT id, email, full_name, school_id, department_id, username, role
         FROM users
         WHERE id = $1
+          AND is_active = true
         LIMIT 1
       `,
       [id],

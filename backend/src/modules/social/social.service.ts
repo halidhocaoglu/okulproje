@@ -8,11 +8,16 @@ import {
 import { CurrentUser } from '../../shared/decorators/current-user.decorator';
 import { CreateFriendRequestDto } from './dto/create-friend-request.dto';
 import { RespondFriendRequestDto } from './dto/respond-friend-request.dto';
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationTypes } from '../notifications/constants/notification-types.constant';
 import { SocialRepository } from './social.repository';
 
 @Injectable()
 export class SocialService {
-  constructor(private readonly socialRepository: SocialRepository) {}
+  constructor(
+    private readonly socialRepository: SocialRepository,
+    private readonly notificationsService: NotificationsService,
+  ) {}
 
   async getFriends(user: CurrentUser) {
     return this.socialRepository.listFriends(user.schoolId, user.id);
@@ -60,6 +65,19 @@ export class SocialService {
       dto.recipientId,
     );
 
+    await this.notificationsService.createNotification({
+      schoolId: user.schoolId,
+      userId: dto.recipientId,
+      type: NotificationTypes.FriendRequestReceived,
+      title: 'New friend request',
+      body: `${user.username ?? user.email} sent you a friend request.`,
+      referenceType: 'user',
+      referenceId: user.id,
+      metadata: {
+        requestId: String(request.id),
+      },
+    });
+
     return {
       status: 'pending',
       requestId: String(request.id),
@@ -98,6 +116,21 @@ export class SocialService {
       status,
     );
 
+    if (status === 'accepted') {
+      await this.notificationsService.createNotification({
+        schoolId: user.schoolId,
+        userId: String(request.requester_id),
+        type: NotificationTypes.FriendRequestAccepted,
+        title: 'Friend request accepted',
+        body: `${user.username ?? user.email} accepted your friend request.`,
+        referenceType: 'user',
+        referenceId: user.id,
+        metadata: {
+          requestId: String(request.id),
+        },
+      });
+    }
+
     return {
       requestId: String(updated?.id ?? request.id),
       status: String(updated?.status ?? status),
@@ -130,7 +163,20 @@ export class SocialService {
       throw new ForbiddenException('Follow is not allowed between blocked users');
     }
 
-    return this.socialRepository.createFollow(user.schoolId, user.id, targetUserId);
+    const result = await this.socialRepository.createFollow(user.schoolId, user.id, targetUserId);
+    if (result?.created) {
+      await this.notificationsService.createNotification({
+        schoolId: user.schoolId,
+        userId: targetUserId,
+        type: NotificationTypes.FollowReceived,
+        title: 'New follower',
+        body: `${user.username ?? user.email} started following you.`,
+        referenceType: 'user',
+        referenceId: user.id,
+      });
+    }
+
+    return result;
   }
 
   async unfollowUser(user: CurrentUser, targetUserId: string) {

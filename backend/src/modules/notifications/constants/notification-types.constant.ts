@@ -1,6 +1,7 @@
 export const NotificationTypes = {
   FriendRequestReceived: 'friend_request_received',
   FriendRequestAccepted: 'friend_request_accepted',
+  FollowReceived: 'follow_received',
   NewDirectMessage: 'new_direct_message',
   GroupInvite: 'group_invite',
   MaterialComment: 'material_comment',
