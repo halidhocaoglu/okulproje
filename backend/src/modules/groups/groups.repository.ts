@@ -474,6 +474,7 @@ export class GroupsRepository {
           SET
             is_active = false,
             is_archived = true,
+            archived_at = COALESCE(archived_at, now()),
             updated_at = now()
           WHERE school_id = $1
             AND group_id = $2
