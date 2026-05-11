@@ -12,6 +12,7 @@ import { UpdateNotificationPreferencesDto } from './dto/update-notification-pref
 @Injectable()
 export class NotificationsRepository {
   private schemaReady = false;
+  private readonly schemaLockId = 8204102;
 
   constructor(@Inject(DATABASE_POOL) private readonly pool: Pool) {}
 
@@ -349,45 +350,58 @@ export class NotificationsRepository {
       return;
     }
 
-    await this.pool.query(`
-      CREATE EXTENSION IF NOT EXISTS pgcrypto;
+    const client = await this.pool.connect();
 
-      CREATE TABLE IF NOT EXISTS notifications (
-        id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-        school_id uuid NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
-        user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        type varchar(64) NOT NULL,
-        title varchar(200) NOT NULL,
-        body varchar(1000) NOT NULL,
-        is_read boolean NOT NULL DEFAULT false,
-        read_at timestamptz NULL,
-        reference_type varchar(64) NULL,
-        reference_id uuid NULL,
-        metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
-        created_at timestamptz NOT NULL DEFAULT now(),
-        updated_at timestamptz NOT NULL DEFAULT now()
-      );
+    try {
+      await client.query('BEGIN');
+      await client.query('SELECT pg_advisory_xact_lock($1)', [this.schemaLockId]);
 
-      CREATE INDEX IF NOT EXISTS idx_notifications_user_created_at
-        ON notifications (user_id, created_at DESC);
+      await client.query(`
+        CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
-      CREATE INDEX IF NOT EXISTS idx_notifications_user_unread
-        ON notifications (user_id, is_read);
+        CREATE TABLE IF NOT EXISTS notifications (
+          id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+          school_id uuid NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
+          user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          type varchar(64) NOT NULL,
+          title varchar(200) NOT NULL,
+          body varchar(1000) NOT NULL,
+          is_read boolean NOT NULL DEFAULT false,
+          read_at timestamptz NULL,
+          reference_type varchar(64) NULL,
+          reference_id uuid NULL,
+          metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
+          created_at timestamptz NOT NULL DEFAULT now(),
+          updated_at timestamptz NOT NULL DEFAULT now()
+        );
 
-      CREATE TABLE IF NOT EXISTS notification_preferences (
-        school_id uuid NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
-        user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        message_notifications_enabled boolean NOT NULL DEFAULT true,
-        social_notifications_enabled boolean NOT NULL DEFAULT true,
-        material_notifications_enabled boolean NOT NULL DEFAULT true,
-        system_notifications_enabled boolean NOT NULL DEFAULT true,
-        created_at timestamptz NOT NULL DEFAULT now(),
-        updated_at timestamptz NOT NULL DEFAULT now(),
-        PRIMARY KEY (school_id, user_id)
-      );
-    `);
+        CREATE INDEX IF NOT EXISTS idx_notifications_user_created_at
+          ON notifications (user_id, created_at DESC);
 
-    this.schemaReady = true;
+        CREATE INDEX IF NOT EXISTS idx_notifications_user_unread
+          ON notifications (user_id, is_read);
+
+        CREATE TABLE IF NOT EXISTS notification_preferences (
+          school_id uuid NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
+          user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          message_notifications_enabled boolean NOT NULL DEFAULT true,
+          social_notifications_enabled boolean NOT NULL DEFAULT true,
+          material_notifications_enabled boolean NOT NULL DEFAULT true,
+          system_notifications_enabled boolean NOT NULL DEFAULT true,
+          created_at timestamptz NOT NULL DEFAULT now(),
+          updated_at timestamptz NOT NULL DEFAULT now(),
+          PRIMARY KEY (school_id, user_id)
+        );
+      `);
+
+      await client.query('COMMIT');
+      this.schemaReady = true;
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 
   private mapNotificationRow(row: Record<string, any>): Record<string, unknown> {

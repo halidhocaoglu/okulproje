@@ -7,6 +7,7 @@ import { CreateGroupDto } from './dto/create-group.dto';
 @Injectable()
 export class GroupsRepository {
   private schemaReady = false;
+  private readonly schemaLockId = 8204101;
 
   constructor(@Inject(DATABASE_POOL) private readonly pool: Pool) {}
 
@@ -432,26 +433,39 @@ export class GroupsRepository {
       return;
     }
 
-    await this.pool.query(`
-      CREATE EXTENSION IF NOT EXISTS pgcrypto;
+    const client = await this.pool.connect();
 
-      CREATE TABLE IF NOT EXISTS group_invites (
-        id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-        school_id uuid NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
-        group_id uuid NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
-        inviter_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        invitee_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        status varchar(32) NOT NULL DEFAULT 'pending',
-        created_at timestamptz NOT NULL DEFAULT now(),
-        responded_at timestamptz NULL,
-        updated_at timestamptz NOT NULL DEFAULT now()
-      );
+    try {
+      await client.query('BEGIN');
+      await client.query('SELECT pg_advisory_xact_lock($1)', [this.schemaLockId]);
 
-      CREATE INDEX IF NOT EXISTS idx_group_invites_invitee_status
-        ON group_invites (invitee_id, status, created_at DESC);
-    `);
+      await client.query(`
+        CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
-    this.schemaReady = true;
+        CREATE TABLE IF NOT EXISTS group_invites (
+          id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+          school_id uuid NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
+          group_id uuid NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
+          inviter_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          invitee_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          status varchar(32) NOT NULL DEFAULT 'pending',
+          created_at timestamptz NOT NULL DEFAULT now(),
+          responded_at timestamptz NULL,
+          updated_at timestamptz NOT NULL DEFAULT now()
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_group_invites_invitee_status
+          ON group_invites (invitee_id, status, created_at DESC);
+      `);
+
+      await client.query('COMMIT');
+      this.schemaReady = true;
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 
   private mapGroup(row: Record<string, any>) {
